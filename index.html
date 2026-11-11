@@ -59,6 +59,8 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 .who{flex:1;min-width:0}.who h2{margin:0;font-size:20px;overflow-wrap:anywhere}
 .bio{margin:10px 14px 14px;overflow-wrap:anywhere}
 #en,#eb{display:block;width:100%;border-radius:10px;margin-bottom:8px}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.pic{display:block;width:100%;height:auto;max-height:520px;object-fit:cover;border-radius:8px;margin-top:8px}
 .cr{text-align:center;color:var(--mu);font-size:13px;padding:4px 12px 24px}
 @media (max-width:640px){
  nav button{padding:8px 7px;font-size:14px}
@@ -74,13 +76,13 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script>
 const sb=supabase.createClient('https://mrhhgsupvhxzgeqhhubo.supabase.co','sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4');
-let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T;
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T,pend=null;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isAdmin=()=>!!(U&&P[U.id]&&P[U.id].is_admin);
 const nm=id=>(P[id]&&P[id].name)||'Étudiant';
 const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55% 42%)`;
-const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${esc(nm(id)[0]||'?').toUpperCase()}</span>`;
+const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${P[id]&&P[id].avatar_url?`<img src="${esc(P[id].avatar_url)}" alt="">`:esc(nm(id)[0]||'?').toUpperCase()}</span>`;
 function ago(t){const m=Math.round((Date.now()-new Date(t))/6e4);if(m<1)return'À l’instant';if(m<60)return`Il y a ${m} min`;const h=Math.round(m/60);return h<24?`Il y a ${h} h`:`Il y a ${Math.round(h/24)} j`}
 
 async function load(){
@@ -95,6 +97,10 @@ async function load(){
  posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];
  render();
 }
+function shrink(f,max){return new Promise((ok,ko)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(new Error('Image illisible')),'image/jpeg',.82)};im.onerror=()=>ko(new Error('Image illisible'));im.src=u})}
+async function upload(f,max){const b=await shrink(f,max),p=`${U.id}/${Date.now()}.jpg`;const{error}=await sb.storage.from('photos').upload(p,b,{contentType:'image/jpeg'});if(error)throw error;return sb.storage.from('photos').getPublicUrl(p).data.publicUrl}
+function rmImg(p){const k=p&&p.image_url&&p.image_url.split('/photos/')[1];if(k)sb.storage.from('photos').remove([k])}
+async function setAvatar(f){if(!f)return;try{const u=await upload(f,400);await run(sb.from('profiles').update({avatar_url:u}).eq('id',U.id))}catch(e){alert(e.message)}}
 async function run(q){const{error}=await q;if(error)alert(error.message);await load()}
 
 function authView(){return `<div class="card auth"><h1>Cercle</h1><p class="meta">Le réseau de ta classe.</p>
@@ -107,14 +113,14 @@ ${mode==='up'?'<input id="nm" placeholder="Ton nom" maxlength="30" autocomplete=
 function post(p){
  const l=lks.filter(x=>x.post_id===p.id),mine=l.some(x=>x.user_id===U.id),c=cms.filter(x=>x.post_id===p.id);
  return `<article class="card" data-id="${p.id}"><div class="row">${av(p.user_id)}<div><b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b><div class="meta">${ago(p.created_at)}</div></div>${p.user_id===U.id||isAdmin()?'<button class="del" data-a="del" aria-label="Supprimer la publication">×</button>':'<button class="del" data-a="rp" aria-label="Signaler la publication">🚩</button>'}</div>
- <p>${esc(p.content)}</p><div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
+ ${p.content?`<p>${esc(p.content)}</p>`:''}${p.image_url?`<img class="pic" src="${esc(p.image_url)}" alt="Photo de la publication" loading="lazy">`:''}<div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
  <div class="bar"><button class="act ${mine?'on':''}" data-a="like">${mine?'👍 Aimé':'👍 J’aime'}</button></div>
  ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id||isAdmin()?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:`<button class="del" data-a="rc" data-c="${x.id}" aria-label="Signaler le commentaire">🚩</button>`}</div></div>`).join('')}
  <div class="cin"><input id="c${p.id}" placeholder="Écrire un commentaire…" maxlength="1000"><button class="btn" data-a="cm">Envoyer</button></div></article>`}
 
 function feed(by){
  const L=posts.filter(p=>!by||p.user_id===by);
- return (by?'':`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end"><button class="btn" id="pub">Publier</button></div></div>`)
+ return (by?'':`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end" style="gap:8px;align-items:center"><label class="lk" for="pimg">📷 Photo</label><input type="file" id="pimg" accept="image/*" hidden>${pend?`<span class="meta">${esc(pend.name.slice(0,18))} <button class="del" id="pclr" aria-label="Retirer la photo">×</button></span>`:''}<button class="btn" id="pub">Publier</button></div></div>`)
  +(L.map(post).join('')||'<div class="empty">Aucune publication pour l’instant. Écris la première !</div>')}
 
 function chat(){
@@ -133,14 +139,14 @@ function prof(){
  return `<div class="card pc"><div class="cover" style="background:linear-gradient(135deg,${col(id)},#1b74e8)"></div>
  <div class="ph">${av(id,'big')}<div class="who"><h2>${esc(nm(id))}</h2><div class="meta">${n} publication${n>1?'s':''}</div></div>${mine?'<button class="btn" id="ed">Modifier</button>':`<button class="btn" data-m="${id}">Écrire</button>`}</div>
  <p class="bio">${esc(p.bio||'')||'Pas encore de bio.'}</p></div>
- ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end"><button class="btn" id="es">Enregistrer</button></div></div>`:''}
+ ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end" style="gap:8px;align-items:center"><label class="lk" for="avin">📷 Changer la photo</label><input type="file" id="avin" accept="image/*" hidden><button class="btn" id="es">Enregistrer</button></div></div>`:''}
  ${mine?'<div class="end" style="margin:0 0 12px"><button class="lk" id="out">Se déconnecter</button></div>':''}${feed(id)}`}
 
 function mod(){
  const L=reps.map(r=>{
   const k=r.post_id?'post':'comment',i=r.post_id||r.comment_id,c=r.post_id?posts.find(x=>x.id===i):cms.find(x=>x.id===i);
   return `<div class="card"><div class="meta">${k==='post'?'Publication':'Commentaire'} · signalé par ${esc(nm(r.reporter_id))} · ${ago(r.created_at)}</div>
-  <p><b>${c?esc(nm(c.user_id)):'?'}</b> : ${c?esc(c.content):'Contenu introuvable'}</p>
+  <p><b>${c?esc(nm(c.user_id)):'?'}</b> : ${c?esc(c.content):'Contenu introuvable'}</p>${c&&c.image_url?`<img class="pic" src="${esc(c.image_url)}" alt="">`:''}
   ${r.reason?`<div class="meta">Motif : ${esc(r.reason)}</div>`:''}
   <div class="end" style="gap:8px"><button class="lk" data-a="rig" data-r="${r.id}">Ignorer</button><button class="btn" data-a="mdel" data-t="${k}" data-i="${i}">Supprimer</button></div></div>`}).join('');
  return `<h3 style="margin:4px 0 12px">Signalements (${reps.length})</h3>`+(L||'<div class="empty">Aucun signalement. Tout est calme 🎉</div>')
@@ -157,7 +163,7 @@ function draw(){
 function render(){
  const a=document.activeElement,id=a&&a.id,v=a&&a.value;
  draw();
- if(id&&v){const n=document.getElementById(id);if(n){n.value=v;n.focus()}}
+ if(id&&v&&a.type!=='file'){const n=document.getElementById(id);if(n){n.value=v;n.focus()}}
 }
 
 async function start(){
@@ -190,7 +196,9 @@ document.addEventListener('click',async e=>{
  else if(c('#t-md')){tab='md';render()}
  else if(c('#t-pf')){tab='pf';pv=null;edit=false;render()}
  else if(c('#out'))sb.auth.signOut();
- else if(c('#pub')){const i=$('#np'),v=i.value.trim();if(!v)return;i.value='';run(sb.from('posts').insert({content:v}))}
+ else if(c('#pclr')){pend=null;render()}
+ else if(c('#pub')){const v=($('#np').value||'').trim();if(!v&&!pend)return;const b=c('#pub');b.disabled=true;b.textContent='Envoi…';
+  try{const u=pend?await upload(pend,1080):null;pend=null;$('#np').value='';await run(sb.from('posts').insert({content:v,image_url:u}))}catch(er){alert(er.message);render()}}
  else if(c('#bk')){peer=null;render()}
  else if(c('#snd'))send();
  else if(c('#ed')){edit=true;render()}
@@ -200,16 +208,20 @@ document.addEventListener('click',async e=>{
  else if(t.dataset.a){
   const art=c('article'),id=art&&+art.dataset.id;
   if(t.dataset.a==='like'){const mine=lks.some(x=>x.post_id===id&&x.user_id===U.id);run(mine?sb.from('likes').delete().match({post_id:id,user_id:U.id}):sb.from('likes').insert({post_id:id}))}
-  else if(t.dataset.a==='del'){if(confirm('Supprimer cette publication ?'))run(sb.from('posts').delete().eq('id',id))}
+  else if(t.dataset.a==='del'){if(confirm('Supprimer cette publication ?')){rmImg(posts.find(x=>x.id===id));run(sb.from('posts').delete().eq('id',id))}}
   else if(t.dataset.a==='dc')run(sb.from('comments').delete().eq('id',+t.dataset.c));
   else if(t.dataset.a==='cm')addComment(art);
   else if(t.dataset.a==='rp'||t.dataset.a==='rc'){
    const r=prompt('Pourquoi signales-tu ce contenu ? (facultatif)');if(r===null)return;
    const row=t.dataset.a==='rp'?{post_id:id,reason:r.trim()}:{comment_id:+t.dataset.c,reason:r.trim()};
    const{error}=await sb.from('reports').insert(row);alert(error?error.message:'Merci, ton signalement a été envoyé aux modérateurs.')}
-  else if(t.dataset.a==='mdel'){if(confirm('Supprimer ce contenu ?'))run(sb.from(t.dataset.t==='post'?'posts':'comments').delete().eq('id',+t.dataset.i))}
+  else if(t.dataset.a==='mdel'){if(confirm('Supprimer ce contenu ?')){if(t.dataset.t==='post')rmImg(posts.find(x=>x.id===+t.dataset.i));run(sb.from(t.dataset.t==='post'?'posts':'comments').delete().eq('id',+t.dataset.i))}}
   else if(t.dataset.a==='rig')run(sb.from('reports').delete().eq('id',+t.dataset.r));
  }
+});
+document.addEventListener('change',e=>{
+ if(e.target.id==='pimg'){pend=e.target.files[0]||null;render()}
+ else if(e.target.id==='avin')setAvatar(e.target.files[0]);
 });
 document.addEventListener('input',e=>{if(e.target.id==='q'){qv=e.target.value;render()}});
 document.addEventListener('keydown',e=>{
