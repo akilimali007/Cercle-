@@ -88,9 +88,22 @@ main{padding-bottom:84px}
 .bigbtn{width:100%;margin-bottom:12px;padding:12px;border-radius:10px}
 .seg{display:flex;gap:8px;margin:8px 0}
 #et,#ep,#edt,#eds,#lt,#lp,#ls{display:block;width:100%;margin-bottom:8px;border-radius:10px}
+#splash{position:fixed;inset:0;z-index:100;background:linear-gradient(135deg,#a769fa,#5b21b6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease}
+#splash.out{opacity:0;pointer-events:none}
+#splash svg{width:150px;height:150px;overflow:visible}
+#splash .r{fill:none;stroke:#fff;stroke-width:7.8;stroke-dasharray:1;stroke-dashoffset:1;animation:sdraw .7s ease-in-out forwards}
+#splash .r1{animation-delay:.1s}#splash .r2{animation-delay:.5s}#splash .r3{animation-delay:.9s}
+#splash .dot{fill:#fff;opacity:0;transform-origin:100px 100px;animation:spop .35s ease 1.6s forwards}
+#splash .sn{color:#fff;font:800 44px/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:1px;opacity:0;transform:translateY(10px);animation:stxt .6s ease 1.75s forwards}
+@keyframes sdraw{to{stroke-dashoffset:0}}
+@keyframes spop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@keyframes stxt{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#splash{display:none}}
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true"><svg viewBox="0 0 200 200"><circle class="r r1" pathLength="1" cx="100" cy="78.5" r="36"/><circle class="r r2" pathLength="1" cx="81.4" cy="110.7" r="36"/><circle class="r r3" pathLength="1" cx="118.6" cy="110.7" r="36"/><circle class="dot" cx="100" cy="100" r="6.6"/></svg><div class="sn">Cercle</div></div>
+<script>setTimeout(function(){var s=document.getElementById('splash');if(s){s.classList.add('out');setTimeout(function(){s.remove()},600)}},2900)</script>
 <header><div class="logo">Cercle</div></header>
 <main id="app"></main>
 <nav id="nav" hidden>
