@@ -68,15 +68,16 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 </head>
 <body>
 <header><div class="logo">Cercle</div>
-<nav id="nav" hidden><button id="t-feed">Publications</button><button id="t-msg">Messages</button><button id="t-pf" aria-label="Mon profil">👤</button></nav></header>
+<nav id="nav" hidden><button id="t-feed">Publications</button><button id="t-msg">Messages</button><button id="t-md" hidden aria-label="Modération">🛡️</button><button id="t-pf" aria-label="Mon profil">👤</button></nav></header>
 <main id="app"></main>
 <footer class="cr">Créé par Akilimali Dunia Christ-vie</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script>
 const sb=supabase.createClient('https://mrhhgsupvhxzgeqhhubo.supabase.co','sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4');
-let U=null,P={},posts=[],cms=[],lks=[],msgs=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T;
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const isAdmin=()=>!!(U&&P[U.id]&&P[U.id].is_admin);
 const nm=id=>(P[id]&&P[id].name)||'Étudiant';
 const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55% 42%)`;
 const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${esc(nm(id)[0]||'?').toUpperCase()}</span>`;
@@ -88,9 +89,10 @@ async function load(){
   sb.from('posts').select('*').order('created_at',{ascending:false}).limit(60),
   sb.from('comments').select('*').order('created_at'),
   sb.from('likes').select('*'),
-  sb.from('messages').select('*').order('created_at')]);
+  sb.from('messages').select('*').order('created_at'),
+  sb.from('reports').select('*').order('created_at',{ascending:false})]);
  P={};(r[0].data||[]).forEach(p=>P[p.id]=p);
- posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];
+ posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];
  render();
 }
 async function run(q){const{error}=await q;if(error)alert(error.message);await load()}
@@ -104,10 +106,10 @@ ${mode==='up'?'<input id="nm" placeholder="Ton nom" maxlength="30" autocomplete=
 
 function post(p){
  const l=lks.filter(x=>x.post_id===p.id),mine=l.some(x=>x.user_id===U.id),c=cms.filter(x=>x.post_id===p.id);
- return `<article class="card" data-id="${p.id}"><div class="row">${av(p.user_id)}<div><b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b><div class="meta">${ago(p.created_at)}</div></div>${p.user_id===U.id?'<button class="del" data-a="del" aria-label="Supprimer la publication">×</button>':''}</div>
+ return `<article class="card" data-id="${p.id}"><div class="row">${av(p.user_id)}<div><b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b><div class="meta">${ago(p.created_at)}</div></div>${p.user_id===U.id||isAdmin()?'<button class="del" data-a="del" aria-label="Supprimer la publication">×</button>':'<button class="del" data-a="rp" aria-label="Signaler la publication">🚩</button>'}</div>
  <p>${esc(p.content)}</p><div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
  <div class="bar"><button class="act ${mine?'on':''}" data-a="like">${mine?'👍 Aimé':'👍 J’aime'}</button></div>
- ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:''}</div></div>`).join('')}
+ ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id||isAdmin()?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:`<button class="del" data-a="rc" data-c="${x.id}" aria-label="Signaler le commentaire">🚩</button>`}</div></div>`).join('')}
  <div class="cin"><input id="c${p.id}" placeholder="Écrire un commentaire…" maxlength="1000"><button class="btn" data-a="cm">Envoyer</button></div></article>`}
 
 function feed(by){
@@ -134,12 +136,22 @@ function prof(){
  ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end"><button class="btn" id="es">Enregistrer</button></div></div>`:''}
  ${mine?'<div class="end" style="margin:0 0 12px"><button class="lk" id="out">Se déconnecter</button></div>':''}${feed(id)}`}
 
+function mod(){
+ const L=reps.map(r=>{
+  const k=r.post_id?'post':'comment',i=r.post_id||r.comment_id,c=r.post_id?posts.find(x=>x.id===i):cms.find(x=>x.id===i);
+  return `<div class="card"><div class="meta">${k==='post'?'Publication':'Commentaire'} · signalé par ${esc(nm(r.reporter_id))} · ${ago(r.created_at)}</div>
+  <p><b>${c?esc(nm(c.user_id)):'?'}</b> : ${c?esc(c.content):'Contenu introuvable'}</p>
+  ${r.reason?`<div class="meta">Motif : ${esc(r.reason)}</div>`:''}
+  <div class="end" style="gap:8px"><button class="lk" data-a="rig" data-r="${r.id}">Ignorer</button><button class="btn" data-a="mdel" data-t="${k}" data-i="${i}">Supprimer</button></div></div>`}).join('');
+ return `<h3 style="margin:4px 0 12px">Signalements (${reps.length})</h3>`+(L||'<div class="empty">Aucun signalement. Tout est calme 🎉</div>')
+}
 function draw(){
  const A=$('#app');
  if(!U){$('#nav').hidden=true;A.innerHTML=authView();return}
  $('#nav').hidden=false;
- for(const k of['feed','msg','pf'])$('#t-'+k).className=tab===k?'on':'';
- A.innerHTML=tab==='feed'?feed():tab==='msg'?chat():prof();
+ $('#t-md').hidden=!isAdmin();
+ for(const k of['feed','msg','md','pf'])$('#t-'+k).className=tab===k?'on':'';
+ A.innerHTML=tab==='feed'?feed():tab==='msg'?chat():tab==='md'&&isAdmin()?mod():prof();
  const m=$('#ms');if(m)m.scrollTop=m.scrollHeight;
 }
 function render(){
@@ -175,6 +187,7 @@ document.addEventListener('click',async e=>{
  }
  else if(c('#t-feed')){tab='feed';render()}
  else if(c('#t-msg')){tab='msg';render()}
+ else if(c('#t-md')){tab='md';render()}
  else if(c('#t-pf')){tab='pf';pv=null;edit=false;render()}
  else if(c('#out'))sb.auth.signOut();
  else if(c('#pub')){const i=$('#np'),v=i.value.trim();if(!v)return;i.value='';run(sb.from('posts').insert({content:v}))}
@@ -190,6 +203,12 @@ document.addEventListener('click',async e=>{
   else if(t.dataset.a==='del'){if(confirm('Supprimer cette publication ?'))run(sb.from('posts').delete().eq('id',id))}
   else if(t.dataset.a==='dc')run(sb.from('comments').delete().eq('id',+t.dataset.c));
   else if(t.dataset.a==='cm')addComment(art);
+  else if(t.dataset.a==='rp'||t.dataset.a==='rc'){
+   const r=prompt('Pourquoi signales-tu ce contenu ? (facultatif)');if(r===null)return;
+   const row=t.dataset.a==='rp'?{post_id:id,reason:r.trim()}:{comment_id:+t.dataset.c,reason:r.trim()};
+   const{error}=await sb.from('reports').insert(row);alert(error?error.message:'Merci, ton signalement a été envoyé aux modérateurs.')}
+  else if(t.dataset.a==='mdel'){if(confirm('Supprimer ce contenu ?'))run(sb.from(t.dataset.t==='post'?'posts':'comments').delete().eq('id',+t.dataset.i))}
+  else if(t.dataset.a==='rig')run(sb.from('reports').delete().eq('id',+t.dataset.r));
  }
 });
 document.addEventListener('input',e=>{if(e.target.id==='q'){qv=e.target.value;render()}});
