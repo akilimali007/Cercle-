@@ -11,16 +11,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cercle">
 <style>
-:root{--bg:#f0f2f5;--card:#fff;--tx:#1c1e21;--mu:#65676b;--ac:#1b74e8;--ln:#dfe2e6;--hv:#eef0f3;--them:#e9ebee}
-@media (prefers-color-scheme:dark){:root{--bg:#18191a;--card:#242526;--tx:#e4e6eb;--mu:#a8abb2;--ln:#3a3b3c;--hv:#3a3b3c;--them:#3a3b3c}}
+:root{--bg:#f5f3ff;--card:#fff;--tx:#211b35;--mu:#77718b;--ac:#7653e8;--ln:#e8e2f5;--hv:#f0ecfb;--them:#eee9fa;--glow:rgba(118,83,232,.14)}
+@media (prefers-color-scheme:dark){:root{--bg:#171326;--card:#241e36;--tx:#f3efff;--mu:#b6aecb;--ac:#b29aff;--ln:#3a3150;--hv:#332b48;--them:#39304f;--glow:rgba(178,154,255,.16)}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button,input,textarea{font:inherit;color:inherit}
-header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:6px;padding:8px 12px}
-.logo{font-weight:800;font-size:22px;color:var(--ac);margin-right:auto;letter-spacing:-.5px}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:6px;padding:12px 16px}
+.logo{font-weight:900;font-size:25px;color:var(--ac);margin-right:auto;letter-spacing:-1px}.logo:before{content:"◉";font-size:20px;margin-right:7px;vertical-align:2px}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 main{max-width:640px;margin:0 auto;padding:12px}
-.card{background:var(--card);border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:14px;margin-bottom:13px;box-shadow:0 7px 24px rgba(50,35,90,.045)}
 .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none;cursor:pointer}
 .av.big{width:84px;height:84px;font-size:34px;border:4px solid var(--card)}
 .row{display:flex;gap:10px;align-items:center}.top{align-items:flex-start}
@@ -49,6 +49,7 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 .conv{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;width:100%;background:none;border:0;text-align:left}
 .conv:hover,.conv.on{background:var(--hv)}.conv span{min-width:0}
 .conv .meta{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-results{display:flex;flex-direction:column;gap:9px;padding:4px 0}.search-person{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--ln);border-radius:13px;background:var(--card)}.search-person .av{width:48px;height:48px;font-size:18px}.search-info{flex:1;min-width:0}.search-info b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.search-info .meta{font-size:12px}.search-actions{display:flex;gap:5px;align-items:center}.search-actions .btn{padding:7px 10px;font-size:12px}.search-profile{background:none;border:0;padding:0;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;min-width:0;flex:1}.search-title{font-weight:800;margin:8px 4px 4px}
 .pane{display:flex;flex-direction:column;padding:0;overflow:hidden;margin:0}
 .pane .tp{padding:10px 12px;border-bottom:1px solid var(--ln);font-weight:700}
 .msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px}
@@ -72,13 +73,13 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 @media (max-width:640px){
  .chat{grid-template-columns:1fr}.chat.open .list{display:none}.chat:not(.open) .pane{display:none}.back{display:inline}
 }
-nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav{position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;background:var(--card);border:1px solid var(--ln);border-radius:22px;padding:7px 4px;box-shadow:0 8px 32px rgba(35,22,70,.16)}
 nav[hidden],nav button[hidden]{display:none}
-nav button{flex:1;position:relative;background:none;border:0;padding:6px 2px 8px;cursor:pointer;color:var(--mu);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button{flex:1;position:relative;background:none;border:0;border-radius:15px;padding:7px 2px;cursor:pointer;color:var(--mu);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.2s}
 nav button span{font-size:20px;line-height:1.1}
-nav button.on{color:var(--ac)}
+nav button.on{color:var(--ac);background:var(--glow);transform:translateY(-2px)}
 nav .bd{top:2px;right:calc(50% - 26px)}
-main{padding-bottom:84px}
+main{padding-bottom:105px}
 .chip{display:inline-block;border:0;border-radius:14px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;background:var(--hv);color:var(--mu)}
 .chip.in{background:color-mix(in srgb,#2e9d4f 20%,transparent);color:#2e9d4f}
 .chip.out{background:color-mix(in srgb,#d9822b 20%,transparent);color:#d9822b}
@@ -100,7 +101,8 @@ main{padding-bottom:84px}
 @keyframes spop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
 @keyframes stxt{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#splash{display:none}}
-@media (max-width:420px){nav button{font-size:10px}nav button span{font-size:18px}}
+@media (max-width:420px){nav{left:6px;right:6px}nav button{font-size:9px}nav button span{font-size:18px}}
+.status-strip{display:flex;gap:11px;overflow-x:auto;padding:4px 1px 13px;margin-bottom:5px;scrollbar-width:none}.status-strip::-webkit-scrollbar{display:none}.story{border:0;background:none;min-width:68px;width:68px;padding:0;color:var(--tx);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}.story-ring{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#a78bfa,#7653e8,#f0abfc);display:grid;place-items:center}.story-ring .av{width:100%;height:100%;border:3px solid var(--card)}.story.add .story-ring{background:var(--hv);border:1px dashed var(--ac);color:var(--ac);font-size:26px}.story-name{max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status-compose{display:flex;gap:8px;align-items:center}.status-compose input{flex:1}.status-view{position:fixed;inset:0;z-index:80;background:#171326;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px}.status-view img{max-width:100%;max-height:65vh;border-radius:16px}.status-view p{font-size:18px;white-space:pre-wrap;text-align:center}.status-view button{position:absolute;top:20px;right:20px;background:#ffffff22;color:white;border:0;border-radius:50%;padding:10px;font-size:20px}
 #call{position:fixed;inset:0;z-index:90;background:linear-gradient(135deg,#5b21b6,#2e1065);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 #call #rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #call.novid #rv{opacity:0}
@@ -120,22 +122,23 @@ main{padding-bottom:84px}
 <body>
 <div id="splash" aria-hidden="true"><svg viewBox="0 0 200 200"><circle class="r r1" pathLength="1" cx="100" cy="78.5" r="36"/><circle class="r r2" pathLength="1" cx="81.4" cy="110.7" r="36"/><circle class="r r3" pathLength="1" cx="118.6" cy="110.7" r="36"/><circle class="dot" cx="100" cy="100" r="6.6"/></svg><div class="sn">Cercle</div></div>
 <script>setTimeout(function(){var s=document.getElementById('splash');if(s){s.classList.add('out');setTimeout(function(){s.remove()},600)}},2900)</script>
-<header><div class="logo">Cercle</div></header>
+<header><div class="logo">Cercle</div><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative"> >🔔<i class="bd" id="bd" hidden></i></button></header>
 <main id="app"></main>
 <nav id="nav" hidden>
-<button id="t-feed"><span>💬</span>Fil</button>
-<button id="t-ev"><span>🧭</span>Explorer</button>
-<button id="t-msg"><span>✉️</span>Messages<i class="bd" id="bm" hidden></i></button>
-<button id="t-nt"><span>🔔</span>Alertes<i class="bd" id="bd" hidden></i></button>
-<button id="t-md" hidden><span>🛡️</span>Modé</button>
-<button id="t-pf"><span>👤</span>Profil</button>
+<button id="t-feed"><span>⌂</span>Accueil</button>
+<button id="t-search"><span>⌕</span>Recherche</button>
+<button id="t-ev"><span>✧</span>Explorer</button>
+<button id="t-msg"><span>▤</span>Messages<i class="bd" id="bm" hidden></i></button>
+<button id="t-pf"><span>◉</span>Profil</button>
+<button id="t-md" hidden><span>♜</span>Modé</button>
 </nav>
 <footer class="cr">Créé par Akilimali Dunia Christ-vie</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script>
 const SBURL='https://mrhhgsupvhxzgeqhhubo.supabase.co',SBKEY='sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4';
 const sb=supabase.createClient(SBURL,SBKEY);
-let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,evs=[],rsv=[],flt='all',showForm=false,eon=true,epend=null,fd={t:'',p:'',d:'',s:''},items=[],sect='ev',lflt='all',lform=false,lk='lost',lfd={t:'',p:'',s:''},lpend=null,addAcc=false,amode='in',ad={n:'',e:'',p:''},pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,nseen=0;
+let showStatus=false,statusPend=null;
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],follows=[],statuses=[],followView=null,tab='feed',peer=null,evs=[],rsv=[],flt='all',showForm=false,eon=true,epend=null,fd={t:'',p:'',d:'',s:''},items=[],sect='ev',lflt='all',lform=false,lk='lost',lfd={t:'',p:'',s:''},lpend=null,addAcc=false,amode='in',ad={n:'',e:'',p:''},pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,nseen=0;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isAdmin=()=>!!(U&&P[U.id]&&P[U.id].is_admin);
@@ -163,10 +166,12 @@ async function load(){
   sb.from('reports').select('*').order('created_at',{ascending:false}),
   sb.from('events').select('*').gte('starts_at',new Date(Date.now()-108e5).toISOString()),
   sb.from('rsvps').select('*'),
-  sb.from('lost_items').select('*').gte('created_at',new Date(Date.now()-5184e6).toISOString()).order('created_at',{ascending:false})]);
+  sb.from('lost_items').select('*').gte('created_at',new Date(Date.now()-5184e6).toISOString()).order('created_at',{ascending:false}),
+  sb.from('follows').select('*'),
+  sb.from('statuses').select('*').gt('created_at',new Date(Date.now()-864e5).toISOString()).order('created_at',{ascending:false})]);
  P={};(r[0].data||[]).forEach(p=>P[p.id]=p);
  {const a=accts();if(U&&a[U.id]&&P[U.id]){a[U.id].name=P[U.id].name;setAccts(a)}}
- posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];evs=r[6].data||[];rsv=r[7].data||[];items=r[8].data||[];
+ posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];evs=r[6].data||[];rsv=r[7].data||[];items=r[8].data||[];follows=r[9].data||[];statuses=r[10].data||[];
  render();
 }
 function shrink(f,max){return new Promise((ok,ko)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(new Error('Image illisible')),'image/jpeg',.82)};im.onerror=()=>ko(new Error('Image illisible'));im.src=u})}
@@ -293,27 +298,48 @@ function post(p){
  ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id||isAdmin()?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:`<button class="del" data-a="rc" data-c="${x.id}" aria-label="Signaler le commentaire">🚩</button>`}</div></div>`).join('')}
  <div class="cin"><input id="c${p.id}" placeholder="Écrire un commentaire…" maxlength="1000"><button class="btn" data-a="cm">Envoyer</button></div></article>`}
 
+function statusZone(){
+ const mine=statuses.find(x=>x.user_id===U.id);
+ const members=[...new Set(statuses.map(x=>x.user_id))].filter(id=>id!==U.id);
+ return `<section class="card" style="padding:12px 10px 4px"><div class="row" style="padding:0 4px 9px"><b>Les instants</b><span class="meta" style="margin-left:auto">24 heures</span></div><div class="status-strip"><button class="story add" id="status-add"><span class="story-ring">＋</span><span class="story-name">Mon statut</span></button>${mine?`<button class="story" data-status="${mine.id}"><span class="story-ring">${av(U.id)}</span><span class="story-name">Mon statut</span></button>`:''}${members.map(id=>{const st=statuses.find(x=>x.user_id===id);return `<button class="story" data-status="${st.id}"><span class="story-ring">${av(id)}</span><span class="story-name">${esc(nm(id))}</span></button>`}).join('')||'<span class="meta" style="align-self:center">Les nouveaux statuts apparaîtront ici.</span>'}</div></section>${showStatusForm()}`;
+}
+function showStatusForm(){return showStatus?`<div class="card"><b>Partager un instant</b><textarea id="status-text" rows="2" maxlength="500" placeholder="Que veux-tu partager ?" style="width:100%;margin:9px 0"></textarea><div class="end" style="gap:8px;align-items:center"><label class="lk" for="status-img">📷 Photo</label><input type="file" id="status-img" accept="image/*" hidden><button class="lk" id="status-cancel">Annuler</button><button class="btn" id="status-publish">Partager</button></div></div>`:''}
 function feed(by){
  const L=posts.filter(p=>!by||p.user_id===by);
- return (by?'':`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end" style="gap:8px;align-items:center"><label class="lk" for="pimg">📷 Photo</label><input type="file" id="pimg" accept="image/*" hidden>${pend?`<span class="meta">${esc(pend.name.slice(0,18))} <button class="del" id="pclr" aria-label="Retirer la photo">×</button></span>`:''}<button class="btn" id="pub">Publier</button></div></div>`)
+ return (by?'':(statusZone()+`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end" style="gap:8px;align-items:center"><label class="lk" for="pimg">📷 Photo</label><input type="file" id="pimg" accept="image/*" hidden>${pend?`<span class="meta">${esc(pend.name.slice(0,18))} <button class="del" id="pclr" aria-label="Retirer la photo">×</button></span>`:''}<button class="btn" id="pub">Publier</button></div></div>`))
  +(L.map(post).join('')||'<div class="empty">Aucune publication pour l’instant. Écris la première !</div>')}
 
 function chat(){
  const last={};msgs.forEach(m=>{last[m.sender_id===U.id?m.receiver_id:m.sender_id]=m});
  const ts=id=>last[id]?+new Date(last[id].created_at):0;
  const o=Object.values(P).filter(p=>p.id!==U.id&&p.name.toLowerCase().includes(qv.toLowerCase())).sort((a,b)=>ts(b.id)-ts(a.id)||a.name.localeCompare(b.name));
- const list=`<input id="q" placeholder="Chercher un étudiant" value="${esc(qv)}" style="width:100%;margin-bottom:6px">`+
-  (o.map(p=>`<button class="conv ${peer===p.id?'on':''}" data-m="${p.id}">${av(p.id)}<span><b>${esc(p.name)}</b><span class="meta">${last[p.id]?esc(last[p.id].content):'Nouvelle conversation'}</span></span></button>`).join('')||'<div class="empty">Personne trouvé.</div>');
+ const list=`<input id="q" placeholder="🔎 Rechercher une personne" value="${esc(qv)}" style="width:100%;margin-bottom:8px">`+
+  (qv.trim()?`<div class="search-title">${o.length} résultat${o.length>1?'s':''}</div><div class="search-results">${o.map(p=>{const followers=follows.filter(x=>x.following_id===p.id).length,following=follows.some(x=>x.follower_id===U.id&&x.following_id===p.id);return `<div class="search-person"><button class="search-profile" data-p="${p.id}">${av(p.id)}<span class="search-info"><b>${esc(p.name)}</b><span class="meta">${followers} abonné${followers>1?'s':''}</span></span></button><div class="search-actions"><button class="btn" data-follow="${p.id}">${following?'✓ Abonné':'＋ Suivre'}</button></div></div>`}).join('')||'<div class="empty">Aucun compte trouvé. Essaie un autre nom.</div>'}</div>`:
+  (o.map(p=>`<button class="conv ${peer===p.id?'on':''}" data-m="${p.id}">${av(p.id)}<span><b>${esc(p.name)}</b><span class="meta">${last[p.id]?esc(last[p.id].content):'Nouvelle conversation'}</span></span></button>`).join('')||'<div class="empty">Aucune conversation pour le moment.</div>'));
  let pane='<div class="empty" style="margin:auto">Choisis une conversation.</div>';
  if(peer){const L=msgs.filter(m=>(m.sender_id===U.id&&m.receiver_id===peer)||(m.sender_id===peer&&m.receiver_id===U.id));
   pane=`<div class="tp"><button class="back" id="bk">‹ Retour</button>${esc(nm(peer))}<span class="cbtns"><button class="lk" data-call="a" aria-label="Appel vocal">📞</button><button class="lk" data-call="v" aria-label="Appel vidéo">📹</button></span></div><div class="msgs" id="ms">${L.map(m=>`<div class="m ${m.sender_id===U.id?'me':''}">${esc(m.content)}</div>`).join('')||'<div class="empty">Dis bonjour 👋</div>'}</div><div class="msgin"><input id="mi" placeholder="Écrire un message…" maxlength="2000"><button class="btn" id="snd">Envoyer</button></div>`}
  return `<div class="chat ${peer?'open':''}"><div class="card list">${list}</div><div class="card pane">${pane}</div></div>`}
 
+function peopleResults(){
+ const term=qv.trim().toLocaleLowerCase();
+ const people=Object.values(P).filter(p=>p.id!==U.id&&(!term||(p.name||'').toLocaleLowerCase().includes(term))).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+ return `<div class="search-title">${term?`${people.length} résultat${people.length>1?'s':''}`:'Découvrir des personnes'}</div><div class="search-results">${people.map(p=>{const followers=follows.filter(x=>x.following_id===p.id).length,following=follows.some(x=>x.follower_id===U.id&&x.following_id===p.id);return `<div class="search-person"><button class="search-profile" data-p="${p.id}">${av(p.id)}<span class="search-info"><b>${esc(p.name||'Étudiant')}</b><span class="meta">${followers} abonné${followers>1?'s':''}</span></span></button><div class="search-actions"><button class="btn" data-follow="${p.id}">${following?'✓ Abonné':'＋ S’abonner'}</button></div></div>`}).join('')||'<div class="empty">Aucun compte trouvé. Essaie un autre nom.</div>'}</div>`;
+}
+function searchView(){return `<h2 style="margin:4px 0 12px">Trouver des personnes</h2><div class="card"><input id="q" type="search" placeholder="🔎 Rechercher un nom…" value="${esc(qv)}" style="width:100%;margin-bottom:8px"><p class="meta" style="margin:0">Découvre les membres de Cercle et abonne-toi à leurs profils.</p></div>${peopleResults()}`}
+
 function prof(){
  const id=pv||U.id,mine=id===U.id,p=P[id]||{},n=posts.filter(x=>x.user_id===id).length;
+ const followers=follows.filter(x=>x.following_id===id),following=follows.filter(x=>x.follower_id===id);
+ const isFollowing=following.some(x=>x.following_id===U.id);
+ const list=followView==='followers'?followers:followView==='following'?following:[];
+ const listIds=list.map(x=>followView==='followers'?x.follower_id:x.following_id);
+ const followList=followView?`<div class="card"><div class="row"><b>${followView==='followers'?'Abonnés':'Abonnements'}</b><button class="lk" id="fclose">Fermer</button></div>${listIds.map(uid=>`<button class="conv" data-p="${uid}">${av(uid)}<b>${esc(nm(uid))}</b></button>`).join('')||'<div class="empty">Cette liste est vide.</div>'}</div>`:'';
  return `<div class="card pc"><div class="cover" style="background:linear-gradient(135deg,${col(id)},#1b74e8)"></div>
- <div class="ph">${av(id,'big')}<div class="who"><h2>${esc(nm(id))}</h2><div class="meta">${n} publication${n>1?'s':''}</div></div>${mine?'<button class="btn" id="ed">Modifier</button>':`<button class="btn" data-m="${id}">Écrire</button>`}</div>
+ <div class="ph">${av(id,'big')}<div class="who"><h2>${esc(nm(id))}</h2><div class="meta">${n} publication${n>1?'s':''}</div></div>${mine?'<button class="btn" id="ed">Modifier</button>':`<button class="btn" data-follow="${id}">${isFollowing?'✓ Abonné':'＋ S’abonner'}</button><button class="lk" data-m="${id}">Écrire</button>`}</div>
+ <div class="filters" style="margin:10px 0"><button class="chip" data-followview="followers">${followers.length} abonnés</button><button class="chip" data-followview="following">${following.length} abonnements</button></div>
  <p class="bio">${esc(p.bio||'')||'Pas encore de bio.'}</p></div>
+ ${followList}
  ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end" style="gap:8px;align-items:center"><label class="lk" for="avin">📷 Changer la photo</label><input type="file" id="avin" accept="image/*" hidden><button class="btn" id="es">Enregistrer</button></div></div>`:''}
  ${feed(id)}`}
 
@@ -390,8 +416,8 @@ function draw(){
  if(!U){$('#nav').hidden=true;A.innerHTML=authView();return}
  $('#nav').hidden=false;
  $('#t-md').hidden=!isAdmin();
- for(const k of['ev','feed','msg','nt','md','pf'])$('#t-'+k).className=tab===k?'on':'';
- A.innerHTML=tab==='ev'?home():tab==='feed'?feed():tab==='msg'?chat():tab==='nt'?ntv():tab==='md'&&isAdmin()?mod():prof();
+ for(const k of['ev','feed','search','msg','md','pf'])$('#t-'+k).className=tab===k?'on':'';
+ A.innerHTML=tab==='ev'?home():tab==='feed'?feed():tab==='search'?searchView():tab==='msg'?chat():tab==='nt'?ntv():tab==='md'&&isAdmin()?mod():prof();
  const un=notifs().filter(n=>+new Date(n.t)>seenN()).length,um=msgs.filter(m=>m.receiver_id===U.id&&!m.read_at).length;
  $('#bd').textContent=un;$('#bd').hidden=!un||tab==='nt';$('#bm').textContent=um;$('#bm').hidden=!um;
  document.title=(un+um?`(${un+um}) `:'')+'Cercle';
@@ -458,8 +484,14 @@ document.addEventListener('click',async e=>{
    addAcc=false;ad={n:'',e:'',p:''};
    await sb.auth.setSession({access_token:ss.access_token,refresh_token:ss.refresh_token});
   }catch(x){er.textContent=x.message}}
+ else if(c('#head-notif')){tab='nt';nseen=seenN();render()}
+ else if(c('#status-add')){showStatus=!showStatus;render()}
+ else if(c('#status-cancel')){showStatus=false;statusPend=null;render()}
+ else if(c('#status-publish')){const content=($('#status-text').value||'').trim(),f=$('#status-img').files[0];if(!content&&!f){alert('Ajoute un texte ou une photo.');return}const b=c('#status-publish');b.disabled=true;b.textContent='Envoi…';try{const image_url=f?await upload(f,1080):null;const{error}=await sb.from('statuses').insert({content,image_url});if(error)throw error;showStatus=false;await load()}catch(e){alert('Impossible de publier le statut. Vérifie la configuration de la table statuses dans Supabase. '+e.message);render()}}
+ else if(c('[data-status]')){const st=statuses.find(x=>x.id===c('[data-status]').dataset.status);if(st){const ov=document.createElement('div');ov.className='status-view';ov.innerHTML=`<button id="close-status">×</button><div class="meta" style="color:#ddd;margin-bottom:16px">${esc(nm(st.user_id))} · ${ago(st.created_at)}</div>${st.image_url?`<img src="${esc(st.image_url)}" alt="Statut">`:''}<p>${esc(st.content||'')}</p>`;document.body.appendChild(ov);ov.querySelector('#close-status').onclick=()=>ov.remove()}}
  else if(c('#t-ev')){tab='ev';render()}
  else if(c('#t-feed')){tab='feed';render()}
+ else if(c('#t-search')){tab='search';qv='';render()}
  else if(c('[data-s]')){sect=c('[data-s]').dataset.s;render()}
  else if(c('[data-lf]')){lflt=c('[data-lf]').dataset.lf;render()}
  else if(c('#nlf')){lform=!lform;render()}
@@ -485,16 +517,23 @@ document.addEventListener('click',async e=>{
  else if(c('#t-msg')){tab='msg';render()}
  else if(c('#t-nt')){tab='nt';nseen=seenN();render()}
  else if(c('#t-md')){tab='md';render()}
- else if(c('#t-pf')){tab='pf';pv=null;edit=false;render()}
+ else if(c('#t-pf')){tab='pf';pv=null;edit=false;followView=null;render()}
  else if(c('#out'))logout();
  else if(c('#pclr')){pend=null;render()}
  else if(c('#pub')){const v=($('#np').value||'').trim();if(!v&&!pend)return;const b=c('#pub');b.disabled=true;b.textContent='Envoi…';
   try{const u=pend?await upload(pend,1080):null;pend=null;$('#np').value='';await run(sb.from('posts').insert({content:v,image_url:u}))}catch(er){alert(er.message);render()}}
  else if(c('#bk')){peer=null;render()}
  else if(c('#snd'))send();
+ else if(c('[data-follow]')){
+  const id=c('[data-follow]').dataset.follow,exists=follows.some(x=>x.follower_id===U.id&&x.following_id===id);
+  const q=exists?sb.from('follows').delete().eq('follower_id',U.id).eq('following_id',id):sb.from('follows').insert({follower_id:U.id,following_id:id});
+  const{error}=await q;if(error)alert(error.message);else await load();
+ }
+ else if(c('[data-followview]')){followView=c('[data-followview]').dataset.followview;render()}
+ else if(c('#fclose')){followView=null;render()}
  else if(c('#ed')){edit=true;render()}
  else if(c('#es')){const n=$('#en').value.trim()||'Étudiant';edit=false;run(sb.from('profiles').update({name:n,bio:$('#eb').value.trim()}).eq('id',U.id))}
- else if(c('[data-p]')){pv=c('[data-p]').dataset.p;tab='pf';edit=false;render();scrollTo(0,0)}
+ else if(c('[data-p]')){pv=c('[data-p]').dataset.p;tab='pf';edit=false;followView=null;render();scrollTo(0,0)}
  else if(c('[data-go]')){tab=c('[data-go]').dataset.go;render();scrollTo(0,0)}
  else if(c('[data-m]')){peer=c('[data-m]').dataset.m;tab='msg';render();const i=$('#mi');if(i)i.focus()}
  else if(t.dataset.a){
