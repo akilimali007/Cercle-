@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Cercle</title>
+<style>
+:root{--bg:#f0f2f5;--card:#fff;--tx:#1c1e21;--mu:#65676b;--ac:#1b74e8;--ln:#dfe2e6;--hv:#eef0f3;--them:#e9ebee}
+@media (prefers-color-scheme:dark){:root{--bg:#18191a;--card:#242526;--tx:#e4e6eb;--mu:#a8abb2;--ln:#3a3b3c;--hv:#3a3b3c;--them:#3a3b3c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:6px;padding:8px 12px}
+.logo{font-weight:800;font-size:22px;color:var(--ac);margin-right:auto;letter-spacing:-.5px}
+nav{display:flex}
+nav button{background:none;border:0;padding:8px 10px;cursor:pointer;color:var(--mu);font-weight:600}
+nav button.on{color:var(--ac);box-shadow:inset 0 -3px 0 var(--ac)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+main{max-width:640px;margin:0 auto;padding:12px}
+.card{background:var(--card);border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none;cursor:pointer}
+.av.big{width:84px;height:84px;font-size:34px;border:4px solid var(--card)}
+.row{display:flex;gap:10px;align-items:center}.top{align-items:flex-start}
+.end{display:flex;justify-content:flex-end;margin-top:8px}
+textarea,input{border:0;background:var(--hv);border-radius:18px;padding:9px 14px;min-width:0}
+textarea{flex:1;resize:none}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 16px;font-weight:600;cursor:pointer}
+.lk{background:none;border:0;color:var(--ac);cursor:pointer;font-weight:600;padding:8px}
+.meta{color:var(--mu);font-size:13px}
+article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.bar{display:flex;border-top:1px solid var(--ln);margin-top:8px;padding-top:4px}
+.act{flex:1;background:none;border:0;padding:8px;border-radius:6px;cursor:pointer;color:var(--mu);font-weight:600}
+.act:hover{background:var(--hv)}.act.on{color:var(--ac)}
+.cm{display:flex;gap:8px;margin-top:8px}.cm .av{width:30px;height:30px;font-size:12px}
+.bub{background:var(--hv);border-radius:16px;padding:6px 12px;overflow-wrap:anywhere;position:relative}
+.bub b{display:block;font-size:13px}
+.cin{display:flex;gap:8px;margin-top:10px}.cin input,.msgin input{flex:1}
+.del{margin-left:auto;background:none;border:0;color:var(--mu);cursor:pointer;font-size:18px;padding:0 6px}
+.lnk{cursor:pointer}.lnk:hover{text-decoration:underline}
+.empty{text-align:center;color:var(--mu);padding:28px 12px}
+.auth{display:flex;flex-direction:column;gap:10px;margin-top:8vh}
+.auth h1{margin:0;color:var(--ac);font-size:34px}.auth p{margin:0}
+.err{color:#d93025;min-height:1.2em}
+.chat{display:grid;grid-template-columns:230px 1fr;gap:12px;height:calc(100dvh - 110px);min-height:360px}
+.list{overflow:auto;padding:6px}
+.conv{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+.conv:hover,.conv.on{background:var(--hv)}.conv span{min-width:0}
+.conv .meta{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pane{display:flex;flex-direction:column;padding:0;overflow:hidden;margin:0}
+.pane .tp{padding:10px 12px;border-bottom:1px solid var(--ln);font-weight:700}
+.msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:78%;padding:8px 12px;border-radius:18px;background:var(--them);overflow-wrap:anywhere}
+.m.me{align-self:flex-end;background:var(--ac);color:#fff}
+.msgin{display:flex;gap:8px;padding:10px;border-top:1px solid var(--ln)}
+.back{display:none;background:none;border:0;color:var(--ac);cursor:pointer;font-weight:600}
+.cover{height:110px;border-radius:10px 10px 0 0}.pc{padding:0}
+.ph{display:flex;align-items:flex-end;gap:12px;padding:0 14px;margin-top:-34px}
+.who{flex:1;min-width:0}.who h2{margin:0;font-size:20px;overflow-wrap:anywhere}
+.bio{margin:10px 14px 14px;overflow-wrap:anywhere}
+#en,#eb{display:block;width:100%;border-radius:10px;margin-bottom:8px}
+.cr{text-align:center;color:var(--mu);font-size:13px;padding:4px 12px 24px}
+@media (max-width:640px){
+ nav button{padding:8px 7px;font-size:14px}
+ .chat{grid-template-columns:1fr}.chat.open .list{display:none}.chat:not(.open) .pane{display:none}.back{display:inline}
+}
+</style>
+</head>
+<body>
+<header><div class="logo">Cercle</div>
+<nav id="nav" hidden><button id="t-feed">Publications</button><button id="t-msg">Messages</button><button id="t-pf" aria-label="Mon profil">👤</button></nav></header>
+<main id="app"></main>
+<footer class="cr">Créé par Akilimali Dunia Christ-vie</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script>
+const sb=supabase.createClient('https://mrhhgsupvhxzgeqhhubo.supabase.co','sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4');
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nm=id=>(P[id]&&P[id].name)||'Étudiant';
+const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55% 42%)`;
+const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${esc(nm(id)[0]||'?').toUpperCase()}</span>`;
+function ago(t){const m=Math.round((Date.now()-new Date(t))/6e4);if(m<1)return'À l’instant';if(m<60)return`Il y a ${m} min`;const h=Math.round(m/60);return h<24?`Il y a ${h} h`:`Il y a ${Math.round(h/24)} j`}
+
+async function load(){
+ const r=await Promise.all([
+  sb.from('profiles').select('*'),
+  sb.from('posts').select('*').order('created_at',{ascending:false}).limit(60),
+  sb.from('comments').select('*').order('created_at'),
+  sb.from('likes').select('*'),
+  sb.from('messages').select('*').order('created_at')]);
+ P={};(r[0].data||[]).forEach(p=>P[p.id]=p);
+ posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];
+ render();
+}
+async function run(q){const{error}=await q;if(error)alert(error.message);await load()}
+
+function authView(){return `<div class="card auth"><h1>Cercle</h1><p class="meta">Le réseau de ta classe.</p>
+${mode==='up'?'<input id="nm" placeholder="Ton nom" maxlength="30" autocomplete="name">':''}
+<input id="em" type="email" placeholder="E-mail" autocomplete="email">
+<input id="pw" type="password" placeholder="Mot de passe (6 caractères min.)" autocomplete="${mode==='up'?'new-password':'current-password'}">
+<button class="btn" id="go">${mode==='up'?'Créer mon compte':'Se connecter'}</button>
+<p class="err" id="er"></p><button class="lk" id="sw">${mode==='up'?'J’ai déjà un compte':'Créer un compte'}</button></div>`}
+
+function post(p){
+ const l=lks.filter(x=>x.post_id===p.id),mine=l.some(x=>x.user_id===U.id),c=cms.filter(x=>x.post_id===p.id);
+ return `<article class="card" data-id="${p.id}"><div class="row">${av(p.user_id)}<div><b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b><div class="meta">${ago(p.created_at)}</div></div>${p.user_id===U.id?'<button class="del" data-a="del" aria-label="Supprimer la publication">×</button>':''}</div>
+ <p>${esc(p.content)}</p><div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
+ <div class="bar"><button class="act ${mine?'on':''}" data-a="like">${mine?'👍 Aimé':'👍 J’aime'}</button></div>
+ ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:''}</div></div>`).join('')}
+ <div class="cin"><input id="c${p.id}" placeholder="Écrire un commentaire…" maxlength="1000"><button class="btn" data-a="cm">Envoyer</button></div></article>`}
+
+function feed(by){
+ const L=posts.filter(p=>!by||p.user_id===by);
+ return (by?'':`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end"><button class="btn" id="pub">Publier</button></div></div>`)
+ +(L.map(post).join('')||'<div class="empty">Aucune publication pour l’instant. Écris la première !</div>')}
+
+function chat(){
+ const last={};msgs.forEach(m=>{last[m.sender_id===U.id?m.receiver_id:m.sender_id]=m});
+ const ts=id=>last[id]?+new Date(last[id].created_at):0;
+ const o=Object.values(P).filter(p=>p.id!==U.id&&p.name.toLowerCase().includes(qv.toLowerCase())).sort((a,b)=>ts(b.id)-ts(a.id)||a.name.localeCompare(b.name));
+ const list=`<input id="q" placeholder="Chercher un étudiant" value="${esc(qv)}" style="width:100%;margin-bottom:6px">`+
+  (o.map(p=>`<button class="conv ${peer===p.id?'on':''}" data-m="${p.id}">${av(p.id)}<span><b>${esc(p.name)}</b><span class="meta">${last[p.id]?esc(last[p.id].content):'Nouvelle conversation'}</span></span></button>`).join('')||'<div class="empty">Personne trouvé.</div>');
+ let pane='<div class="empty" style="margin:auto">Choisis une conversation.</div>';
+ if(peer){const L=msgs.filter(m=>(m.sender_id===U.id&&m.receiver_id===peer)||(m.sender_id===peer&&m.receiver_id===U.id));
+  pane=`<div class="tp"><button class="back" id="bk">‹ Retour</button>${esc(nm(peer))}</div><div class="msgs" id="ms">${L.map(m=>`<div class="m ${m.sender_id===U.id?'me':''}">${esc(m.content)}</div>`).join('')||'<div class="empty">Dis bonjour 👋</div>'}</div><div class="msgin"><input id="mi" placeholder="Écrire un message…" maxlength="2000"><button class="btn" id="snd">Envoyer</button></div>`}
+ return `<div class="chat ${peer?'open':''}"><div class="card list">${list}</div><div class="card pane">${pane}</div></div>`}
+
+function prof(){
+ const id=pv||U.id,mine=id===U.id,p=P[id]||{},n=posts.filter(x=>x.user_id===id).length;
+ return `<div class="card pc"><div class="cover" style="background:linear-gradient(135deg,${col(id)},#1b74e8)"></div>
+ <div class="ph">${av(id,'big')}<div class="who"><h2>${esc(nm(id))}</h2><div class="meta">${n} publication${n>1?'s':''}</div></div>${mine?'<button class="btn" id="ed">Modifier</button>':`<button class="btn" data-m="${id}">Écrire</button>`}</div>
+ <p class="bio">${esc(p.bio||'')||'Pas encore de bio.'}</p></div>
+ ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end"><button class="btn" id="es">Enregistrer</button></div></div>`:''}
+ ${mine?'<div class="end" style="margin:0 0 12px"><button class="lk" id="out">Se déconnecter</button></div>':''}${feed(id)}`}
+
+function draw(){
+ const A=$('#app');
+ if(!U){$('#nav').hidden=true;A.innerHTML=authView();return}
+ $('#nav').hidden=false;
+ for(const k of['feed','msg','pf'])$('#t-'+k).className=tab===k?'on':'';
+ A.innerHTML=tab==='feed'?feed():tab==='msg'?chat():prof();
+ const m=$('#ms');if(m)m.scrollTop=m.scrollHeight;
+}
+function render(){
+ const a=document.activeElement,id=a&&a.id,v=a&&a.value;
+ draw();
+ if(id&&v){const n=document.getElementById(id);if(n){n.value=v;n.focus()}}
+}
+
+async function start(){
+ if(started===U.id)return;started=U.id;
+ await load();
+ const m=U.user_metadata&&U.user_metadata.name;
+ if(m&&P[U.id]&&P[U.id].name===(U.email||'').split('@')[0]){await sb.from('profiles').update({name:m}).eq('id',U.id);P[U.id].name=m;render()}
+ sb.channel('live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(T);T=setTimeout(load,300)}).subscribe();
+}
+sb.auth.onAuthStateChange((ev,s)=>{
+ if(s&&s.user){U=s.user;start()}
+ else{U=null;started=null;sb.removeAllChannels();draw()}
+});
+sb.auth.getSession().then(r=>{if(!r.data.session)draw()});
+
+async function send(){const i=$('#mi'),v=i.value.trim();if(!v)return;i.value='';await run(sb.from('messages').insert({receiver_id:peer,content:v}))}
+async function addComment(art){const i=art.querySelector('.cin input'),v=i.value.trim();if(!v)return;i.value='';await run(sb.from('comments').insert({post_id:+art.dataset.id,content:v}))}
+
+document.addEventListener('click',async e=>{
+ const t=e.target,c=s=>t.closest(s);
+ if(c('#sw')){mode=mode==='up'?'in':'up';draw()}
+ else if(c('#go')){
+  const em=$('#em').value.trim(),pw=$('#pw').value,er=$('#er');er.textContent='';
+  const r=mode==='up'?await sb.auth.signUp({email:em,password:pw,options:{data:{name:($('#nm').value||'').trim()}}}):await sb.auth.signInWithPassword({email:em,password:pw});
+  if(r.error)er.textContent=r.error.message;
+  else if(mode==='up'&&!r.data.session)er.textContent='Compte créé. Ouvre l’e-mail de confirmation, puis connecte-toi.';
+ }
+ else if(c('#t-feed')){tab='feed';render()}
+ else if(c('#t-msg')){tab='msg';render()}
+ else if(c('#t-pf')){tab='pf';pv=null;edit=false;render()}
+ else if(c('#out'))sb.auth.signOut();
+ else if(c('#pub')){const i=$('#np'),v=i.value.trim();if(!v)return;i.value='';run(sb.from('posts').insert({content:v}))}
+ else if(c('#bk')){peer=null;render()}
+ else if(c('#snd'))send();
+ else if(c('#ed')){edit=true;render()}
+ else if(c('#es')){const n=$('#en').value.trim()||'Étudiant';edit=false;run(sb.from('profiles').update({name:n,bio:$('#eb').value.trim()}).eq('id',U.id))}
+ else if(c('[data-p]')){pv=c('[data-p]').dataset.p;tab='pf';edit=false;render();scrollTo(0,0)}
+ else if(c('[data-m]')){peer=c('[data-m]').dataset.m;tab='msg';render();const i=$('#mi');if(i)i.focus()}
+ else if(t.dataset.a){
+  const art=c('article'),id=art&&+art.dataset.id;
+  if(t.dataset.a==='like'){const mine=lks.some(x=>x.post_id===id&&x.user_id===U.id);run(mine?sb.from('likes').delete().match({post_id:id,user_id:U.id}):sb.from('likes').insert({post_id:id}))}
+  else if(t.dataset.a==='del'){if(confirm('Supprimer cette publication ?'))run(sb.from('posts').delete().eq('id',id))}
+  else if(t.dataset.a==='dc')run(sb.from('comments').delete().eq('id',+t.dataset.c));
+  else if(t.dataset.a==='cm')addComment(art);
+ }
+});
+document.addEventListener('input',e=>{if(e.target.id==='q'){qv=e.target.value;render()}});
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Enter'||e.shiftKey)return;const t=e.target;
+ if(t.id==='mi'){e.preventDefault();send()}
+ else if(t.closest&&t.closest('.cin')){e.preventDefault();addComment(t.closest('article'))}
+ else if(t.id==='pw'){e.preventDefault();$('#go').click()}
+});
+</script>
+</body>
+</html>
