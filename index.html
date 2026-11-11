@@ -58,7 +58,7 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 .back{display:none;background:none;border:0;color:var(--ac);cursor:pointer;font-weight:600}
 .cover{height:110px;border-radius:10px 10px 0 0}.pc{padding:0}
 .ph{display:flex;align-items:flex-end;gap:12px;padding:0 14px;margin-top:-34px}
-.who{flex:1;min-width:0}.who h2{margin:0;font-size:20px;overflow-wrap:anywhere}
+.who{flex:1;min-width:0}.who h2{margin:0;font-size:19px;overflow-wrap:break-word}
 .bio{margin:10px 14px 14px;overflow-wrap:anywhere}
 #en,#eb{display:block;width:100%;border-radius:10px;margin-bottom:8px}
 .av{position:relative;overflow:hidden}
@@ -87,6 +87,7 @@ main{padding-bottom:84px}
 .ev h3{margin:8px 0 4px;font-size:18px}.ev .meta{font-size:14px}
 .bigbtn{width:100%;margin-bottom:12px;padding:12px;border-radius:10px}
 .seg{display:flex;gap:8px;margin:8px 0}
+#anm,#aem,#apw{display:block;width:100%;margin-bottom:8px;border-radius:10px}
 #et,#ep,#edt,#eds,#lt,#lp,#ls{display:block;width:100%;margin-bottom:8px;border-radius:10px}
 #splash{position:fixed;inset:0;z-index:100;background:linear-gradient(135deg,#a769fa,#5b21b6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease}
 #splash.out{opacity:0;pointer-events:none}
@@ -99,6 +100,7 @@ main{padding-bottom:84px}
 @keyframes spop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
 @keyframes stxt{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#splash{display:none}}
+@media (max-width:420px){nav button{font-size:10px}nav button span{font-size:18px}}
 </style>
 </head>
 <body>
@@ -113,15 +115,25 @@ main{padding-bottom:84px}
 <button id="t-nt"><span>🔔</span>Alertes<i class="bd" id="bd" hidden></i></button>
 <button id="t-md" hidden><span>🛡️</span>Modé</button>
 <button id="t-pf"><span>👤</span>Profil</button>
+<button id="t-ac"><span>🔄</span>Comptes</button>
 </nav>
 <footer class="cr">Créé par Akilimali Dunia Christ-vie</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script>
-const sb=supabase.createClient('https://mrhhgsupvhxzgeqhhubo.supabase.co','sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4');
-let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,evs=[],rsv=[],flt='all',showForm=false,eon=true,epend=null,fd={t:'',p:'',d:'',s:''},items=[],sect='ev',lflt='all',lform=false,lk='lost',lfd={t:'',p:'',s:''},lpend=null,pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,nseen=0;
+const SBURL='https://mrhhgsupvhxzgeqhhubo.supabase.co',SBKEY='sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4';
+const sb=supabase.createClient(SBURL,SBKEY);
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,evs=[],rsv=[],flt='all',showForm=false,eon=true,epend=null,fd={t:'',p:'',d:'',s:''},items=[],sect='ev',lflt='all',lform=false,lk='lost',lfd={t:'',p:'',s:''},lpend=null,addAcc=false,amode='in',ad={n:'',e:'',p:''},pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,nseen=0;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isAdmin=()=>!!(U&&P[U.id]&&P[U.id].is_admin);
+const AK='cercle_accts';
+const accts=()=>{try{return JSON.parse(localStorage.getItem(AK)||'{}')}catch(e){return{}}};
+const setAccts=a=>{try{localStorage.setItem(AK,JSON.stringify(a))}catch(e){}};
+function saveAcct(s){const a=accts(),o=a[s.user.id]||{};a[s.user.id]={email:s.user.email,name:o.name||(s.user.user_metadata&&s.user.user_metadata.name)||(s.user.email||'').split('@')[0],access_token:s.access_token,refresh_token:s.refresh_token};setAccts(a)}
+async function switchTo(id){const a=accts()[id];if(!a)return;
+ const{error}=await sb.auth.setSession({access_token:a.access_token,refresh_token:a.refresh_token});
+ if(error){alert('Cette session a expiré : reconnecte-toi avec ton e-mail et ton mot de passe.');const b=accts();delete b[id];setAccts(b);render()}}
+async function logout(){const a=accts();if(U)delete a[U.id];setAccts(a);await sb.auth.signOut()}
 const seenN=()=>+new Date((P[U.id]||{}).notif_seen_at||0);
 const nm=id=>(P[id]&&P[id].name)||'Étudiant';
 const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55% 42%)`;
@@ -140,6 +152,7 @@ async function load(){
   sb.from('rsvps').select('*'),
   sb.from('lost_items').select('*').gte('created_at',new Date(Date.now()-5184e6).toISOString()).order('created_at',{ascending:false})]);
  P={};(r[0].data||[]).forEach(p=>P[p.id]=p);
+ {const a=accts();if(U&&a[U.id]&&P[U.id]){a[U.id].name=P[U.id].name;setAccts(a)}}
  posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];evs=r[6].data||[];rsv=r[7].data||[];items=r[8].data||[];
  render();
 }
@@ -149,7 +162,16 @@ function rmImg(p){const k=p&&p.image_url&&p.image_url.split('/photos/')[1];if(k)
 async function setAvatar(f){if(!f)return;try{const u=await upload(f,400);await run(sb.from('profiles').update({avatar_url:u}).eq('id',U.id))}catch(e){alert(e.message)}}
 async function run(q){const{error}=await q;if(error)alert(error.message);await load()}
 
-function authView(){return `<div class="card auth"><h1>Cercle</h1><p class="meta">Le réseau de ta classe.</p>
+function savedList(){const A=accts(),ids=Object.keys(A);if(!ids.length)return'';
+ return `<div><b>Comptes enregistrés</b>${ids.map(id=>`<button class="conv" data-sw="${id}"><span class="av" style="background:${col(id)}">${esc((A[id].name||'?')[0]).toUpperCase()}</span><span><b>${esc(A[id].name||A[id].email)}</b><span class="meta">${esc(A[id].email)}</span></span></button>`).join('')}</div>`}
+function accTab(){return `<p class="meta" style="margin:0 4px 10px">Ajoute un deuxième compte pour passer de l’un à l’autre sans te déconnecter.</p>`+accView()}
+function accView(){
+ const A=accts(),ids=Object.keys(A);
+ const rows=ids.map(id=>`<div class="row" style="margin-bottom:8px"><span class="av" style="background:${col(id)}">${esc((A[id].name||'?')[0]).toUpperCase()}</span><div style="flex:1;min-width:0"><b>${esc(A[id].name||A[id].email)}</b><div class="meta">${esc(A[id].email)}${id===U.id?' · actif':''}</div></div>${id===U.id?'':`<button class="btn" data-sw="${id}">Passer</button>`}<button class="del" data-rm="${id}" aria-label="Retirer ce compte">×</button></div>`).join('');
+ const form=addAcc?`${amode==='up'?`<input id="anm" maxlength="30" placeholder="Ton nom" value="${esc(ad.n)}">`:''}<input id="aem" type="email" placeholder="E-mail" value="${esc(ad.e)}"><input id="apw" type="password" placeholder="Mot de passe" value="${esc(ad.p)}"><button class="btn" id="agoacc" style="width:100%">${amode==='up'?'Créer et passer à ce compte':'Se connecter et passer à ce compte'}</button><p class="err" id="aer"></p><button class="lk" id="asw">${amode==='up'?'J’ai déjà un compte':'Créer un nouveau compte'}</button>`:'';
+ return `<div class="card"><b>Mes comptes sur ce téléphone</b><div style="margin:10px 0">${rows}</div>${form}<div class="end" style="gap:8px"><button class="lk" id="out">Se déconnecter</button><button class="btn" id="addacc">${addAcc?'Annuler':'＋ Ajouter un compte'}</button></div></div>`
+}
+function authView(){return `<div class="card auth"><h1>Cercle</h1><p class="meta">Le réseau de ta classe.</p>${savedList()}
 ${mode==='up'?'<input id="nm" placeholder="Ton nom" maxlength="30" autocomplete="name">':''}
 <input id="em" type="email" placeholder="E-mail" autocomplete="email">
 <input id="pw" type="password" placeholder="Mot de passe (6 caractères min.)" autocomplete="${mode==='up'?'new-password':'current-password'}">
@@ -186,7 +208,7 @@ function prof(){
  <div class="ph">${av(id,'big')}<div class="who"><h2>${esc(nm(id))}</h2><div class="meta">${n} publication${n>1?'s':''}</div></div>${mine?'<button class="btn" id="ed">Modifier</button>':`<button class="btn" data-m="${id}">Écrire</button>`}</div>
  <p class="bio">${esc(p.bio||'')||'Pas encore de bio.'}</p></div>
  ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end" style="gap:8px;align-items:center"><label class="lk" for="avin">📷 Changer la photo</label><input type="file" id="avin" accept="image/*" hidden><button class="btn" id="es">Enregistrer</button></div></div>`:''}
- ${mine?'<div class="end" style="margin:0 0 12px"><button class="lk" id="out">Se déconnecter</button></div>':''}${feed(id)}`}
+ ${feed(id)}`}
 
 function home(){
  const q=(k,t)=>`<button class="chip ${sect===k?'sel':''}" data-s="${k}">${t}</button>`;
@@ -261,8 +283,8 @@ function draw(){
  if(!U){$('#nav').hidden=true;A.innerHTML=authView();return}
  $('#nav').hidden=false;
  $('#t-md').hidden=!isAdmin();
- for(const k of['ev','feed','msg','nt','md','pf'])$('#t-'+k).className=tab===k?'on':'';
- A.innerHTML=tab==='ev'?home():tab==='feed'?feed():tab==='msg'?chat():tab==='nt'?ntv():tab==='md'&&isAdmin()?mod():prof();
+ for(const k of['ev','feed','msg','nt','md','pf','ac'])$('#t-'+k).className=tab===k?'on':'';
+ A.innerHTML=tab==='ev'?home():tab==='feed'?feed():tab==='msg'?chat():tab==='nt'?ntv():tab==='ac'?accTab():tab==='md'&&isAdmin()?mod():prof();
  const un=notifs().filter(n=>+new Date(n.t)>seenN()).length,um=msgs.filter(m=>m.receiver_id===U.id&&!m.read_at).length;
  $('#bd').textContent=un;$('#bd').hidden=!un||tab==='nt';$('#bm').textContent=um;$('#bm').hidden=!um;
  document.title=(un+um?`(${un+um}) `:'')+'Cercle';
@@ -282,7 +304,9 @@ async function start(){
  sb.channel('live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(T);T=setTimeout(load,300)}).subscribe();
 }
 sb.auth.onAuthStateChange((ev,s)=>{
- if(s&&s.user){U=s.user;start()}
+ if(s&&s.user){
+  if(started&&started!==s.user.id){sb.removeAllChannels();started=null;P={};posts=[];cms=[];lks=[];msgs=[];reps=[];evs=[];rsv=[];items=[];tab='feed';peer=null;pv=null;edit=false;addAcc=false}
+  U=s.user;saveAcct(s);start()}
  else{U=null;started=null;sb.removeAllChannels();draw()}
 });
 sb.auth.getSession().then(r=>{if(!r.data.session)draw()});
@@ -299,6 +323,25 @@ document.addEventListener('click',async e=>{
   if(r.error)er.textContent=r.error.message;
   else if(mode==='up'&&!r.data.session)er.textContent='Compte créé. Ouvre l’e-mail de confirmation, puis connecte-toi.';
  }
+ else if(c('[data-sw]')){switchTo(c('[data-sw]').dataset.sw)}
+ else if(c('[data-rm]')){const id=c('[data-rm]').dataset.rm;
+  if(id===U.id){if(confirm('Se déconnecter de ce compte ?'))await logout()}
+  else if(confirm('Retirer ce compte de ce téléphone ?')){const a=accts();delete a[id];setAccts(a);render()}}
+ else if(c('#addacc')){addAcc=!addAcc;render()}
+ else if(c('#asw')){amode=amode==='up'?'in':'up';render()}
+ else if(c('#agoacc')){
+  const er=$('#aer');er.textContent='';
+  try{
+   const tmp=supabase.createClient(SBURL,SBKEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+   const em=ad.e.trim();
+   const r=amode==='up'?await tmp.auth.signUp({email:em,password:ad.p,options:{data:{name:ad.n.trim()}}}):await tmp.auth.signInWithPassword({email:em,password:ad.p});
+   if(r.error){er.textContent=r.error.message;return}
+   const ss=r.data.session;
+   if(!ss){er.textContent='Compte créé. Confirme ton e-mail, puis ajoute-le.';return}
+   const a=accts();a[ss.user.id]={email:ss.user.email,name:(ss.user.user_metadata&&ss.user.user_metadata.name)||em.split('@')[0],access_token:ss.access_token,refresh_token:ss.refresh_token};setAccts(a);
+   addAcc=false;ad={n:'',e:'',p:''};
+   await sb.auth.setSession({access_token:ss.access_token,refresh_token:ss.refresh_token});
+  }catch(x){er.textContent=x.message}}
  else if(c('#t-ev')){tab='ev';render()}
  else if(c('#t-feed')){tab='feed';render()}
  else if(c('[data-s]')){sect=c('[data-s]').dataset.s;render()}
@@ -326,8 +369,9 @@ document.addEventListener('click',async e=>{
  else if(c('#t-msg')){tab='msg';render()}
  else if(c('#t-nt')){tab='nt';nseen=seenN();render()}
  else if(c('#t-md')){tab='md';render()}
+ else if(c('#t-ac')){tab='ac';render()}
  else if(c('#t-pf')){tab='pf';pv=null;edit=false;render()}
- else if(c('#out'))sb.auth.signOut();
+ else if(c('#out'))logout();
  else if(c('#pclr')){pend=null;render()}
  else if(c('#pub')){const v=($('#np').value||'').trim();if(!v&&!pend)return;const b=c('#pub');b.disabled=true;b.textContent='Envoi…';
   try{const u=pend?await upload(pend,1080):null;pend=null;$('#np').value='';await run(sb.from('posts').insert({content:v,image_url:u}))}catch(er){alert(er.message);render()}}
@@ -366,12 +410,13 @@ document.addEventListener('change',e=>{
  else if(e.target.id==='eimg'){epend=e.target.files[0]||null;render()}
  else if(e.target.id==='avin')setAvatar(e.target.files[0]);
 });
-document.addEventListener('input',e=>{const m={et:'t',ep:'p',edt:'d',eds:'s'};if(m[e.target.id])fd[m[e.target.id]]=e.target.value;const m2={lt:'t',lp:'p',ls:'s'};if(m2[e.target.id])lfd[m2[e.target.id]]=e.target.value;if(e.target.id==='q'){qv=e.target.value;render()}});
+document.addEventListener('input',e=>{const m={et:'t',ep:'p',edt:'d',eds:'s'};if(m[e.target.id])fd[m[e.target.id]]=e.target.value;const m2={lt:'t',lp:'p',ls:'s'};if(m2[e.target.id])lfd[m2[e.target.id]]=e.target.value;const m3={anm:'n',aem:'e',apw:'p'};if(m3[e.target.id])ad[m3[e.target.id]]=e.target.value;if(e.target.id==='q'){qv=e.target.value;render()}});
 document.addEventListener('keydown',e=>{
  if(e.key!=='Enter'||e.shiftKey)return;const t=e.target;
  if(t.id==='mi'){e.preventDefault();send()}
  else if(t.closest&&t.closest('.cin')){e.preventDefault();addComment(t.closest('article'))}
  else if(t.id==='pw'){e.preventDefault();$('#go').click()}
+ else if(t.id==='apw'){e.preventDefault();$('#agoacc').click()}
 });
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
