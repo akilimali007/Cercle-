@@ -102,7 +102,7 @@ main{padding-bottom:105px}
 @keyframes stxt{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#splash{display:none}}
 @media (max-width:420px){nav{left:6px;right:6px}nav button{font-size:9px}nav button span{font-size:18px}}
-.status-strip{display:flex;gap:11px;overflow-x:auto;padding:4px 1px 13px;margin-bottom:5px;scrollbar-width:none}.status-strip::-webkit-scrollbar{display:none}.story{border:0;background:none;min-width:68px;width:68px;padding:0;color:var(--tx);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}.story-ring{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#a78bfa,#7653e8,#f0abfc);display:grid;place-items:center}.story-ring .av{width:100%;height:100%;border:3px solid var(--card)}.story.add .story-ring{background:var(--hv);border:1px dashed var(--ac);color:var(--ac);font-size:26px}.story-name{max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status-compose{display:flex;gap:8px;align-items:center}.status-compose input{flex:1}.status-view{position:fixed;inset:0;z-index:80;background:#171326;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px}.status-view img{max-width:100%;max-height:65vh;border-radius:16px}.status-view p{font-size:18px;white-space:pre-wrap;text-align:center}.status-view button{position:absolute;top:20px;right:20px;background:#ffffff22;color:white;border:0;border-radius:50%;padding:10px;font-size:20px}
+.status-strip{display:flex;gap:11px;overflow-x:auto;padding:4px 1px 13px;margin-bottom:5px;scrollbar-width:none}.status-strip::-webkit-scrollbar{display:none}.story{border:0;background:none;min-width:68px;width:68px;padding:0;color:var(--tx);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}.story-ring{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#a78bfa,#7653e8,#f0abfc);display:grid;place-items:center}.story-ring .av{width:100%;height:100%;border:3px solid var(--card)}.story.add .story-ring{background:var(--hv);border:1px dashed var(--ac);color:var(--ac);font-size:26px}.story-name{max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mod-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}.mod-stat{background:var(--hv);border-radius:12px;padding:10px;text-align:center}.mod-stat b{display:block;font-size:20px;color:var(--ac)}.status-compose{display:flex;gap:8px;align-items:center}.status-compose input{flex:1}.status-view{position:fixed;inset:0;z-index:80;background:radial-gradient(ellipse at top,#39245c,#100d18 70%);color:white;display:flex;flex-direction:column;align-items:center;padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));}.story-progress{display:flex;gap:4px;width:100%;height:3px;margin:4px 0 15px}.story-progress i{height:3px;flex:1;background:#ffffff55;border-radius:9px;overflow:hidden}.story-progress i b{display:block;height:100%;width:0;background:#fff}.story-head{width:100%;display:flex;align-items:center;gap:9px;min-height:42px}.story-head .meta{color:#ddd}.story-stage{position:relative;flex:1;width:100%;min-height:0;display:flex;align-items:center;justify-content:center}.story-stage img,.story-stage video{max-width:100%;max-height:100%;object-fit:contain;border-radius:14px}.story-text{font-size:20px;white-space:pre-wrap;text-align:center;padding:20px;overflow-wrap:anywhere}.story-nav{position:absolute;top:0;bottom:0;width:35%;border:0;background:transparent}.story-nav.prev{left:0}.story-nav.next{right:0}.story-close{margin-left:auto;border:0;background:#ffffff22;color:white;border-radius:50%;width:36px;height:36px;font-size:22px}.story-actions{width:100%;display:flex;align-items:center;gap:10px;padding-top:12px}.story-actions button{border:1px solid #ffffff55;background:#ffffff18;color:#fff;border-radius:22px;padding:9px 14px}.story-actions .spacer{flex:1}
 #call{position:fixed;inset:0;z-index:90;background:linear-gradient(135deg,#5b21b6,#2e1065);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 #call #rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #call.novid #rv{opacity:0}
@@ -122,7 +122,7 @@ main{padding-bottom:105px}
 <body>
 <div id="splash" aria-hidden="true"><svg viewBox="0 0 200 200"><circle class="r r1" pathLength="1" cx="100" cy="78.5" r="36"/><circle class="r r2" pathLength="1" cx="81.4" cy="110.7" r="36"/><circle class="r r3" pathLength="1" cx="118.6" cy="110.7" r="36"/><circle class="dot" cx="100" cy="100" r="6.6"/></svg><div class="sn">Cercle</div></div>
 <script>setTimeout(function(){var s=document.getElementById('splash');if(s){s.classList.add('out');setTimeout(function(){s.remove()},600)}},2900)</script>
-<header><div class="logo">Cercle</div><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative"> >🔔<i class="bd" id="bd" hidden></i></button></header>
+<header><div class="logo">Cercle</div><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative">♧<i class="bd" id="bd" hidden></i></button></header>
 <main id="app"></main>
 <nav id="nav" hidden>
 <button id="t-feed"><span>⌂</span>Accueil</button>
@@ -137,8 +137,8 @@ main{padding-bottom:105px}
 <script>
 const SBURL='https://mrhhgsupvhxzgeqhhubo.supabase.co',SBKEY='sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4';
 const sb=supabase.createClient(SBURL,SBKEY);
-let showStatus=false,statusPend=null;
-let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],follows=[],statuses=[],followView=null,tab='feed',peer=null,evs=[],rsv=[],flt='all',showForm=false,eon=true,epend=null,fd={t:'',p:'',d:'',s:''},items=[],sect='ev',lflt='all',lform=false,lk='lost',lfd={t:'',p:'',s:''},lpend=null,addAcc=false,amode='in',ad={n:'',e:'',p:''},pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,nseen=0;
+let showStatus=false,statusPend=null,storyViews=[],storyReactions=[],storyTimer=null,storyIndex=0,storyGroup=[];
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],follows=[],statuses=[],followView=null,tab='feed',peer=null,evs=[],rsv=[],flt='all',showForm=false,eon=true,epend=null,fd={t:'',p:'',d:'',s:''},items=[],sect='ev',lflt='all',lform=false,lk='lost',lfd={t:'',p:'',s:''},lpend=null,addAcc=false,amode='in',ad={n:'',e:'',p:''},pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,vpend=null,nseen=0;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isAdmin=()=>!!(U&&P[U.id]&&P[U.id].is_admin);
@@ -168,14 +168,16 @@ async function load(){
   sb.from('rsvps').select('*'),
   sb.from('lost_items').select('*').gte('created_at',new Date(Date.now()-5184e6).toISOString()).order('created_at',{ascending:false}),
   sb.from('follows').select('*'),
-  sb.from('statuses').select('*').gt('created_at',new Date(Date.now()-864e5).toISOString()).order('created_at',{ascending:false})]);
+  sb.from('statuses').select('*').gt('created_at',new Date(Date.now()-864e5).toISOString()).order('created_at',{ascending:false}),
+  sb.from('story_views').select('*'),sb.from('story_reactions').select('*')]);
  P={};(r[0].data||[]).forEach(p=>P[p.id]=p);
  {const a=accts();if(U&&a[U.id]&&P[U.id]){a[U.id].name=P[U.id].name;setAccts(a)}}
- posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];evs=r[6].data||[];rsv=r[7].data||[];items=r[8].data||[];follows=r[9].data||[];statuses=r[10].data||[];
+ posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];evs=r[6].data||[];rsv=r[7].data||[];items=r[8].data||[];follows=r[9].data||[];statuses=r[10].data||[];storyViews=r[11].data||[];storyReactions=r[12].data||[];
  render();
 }
 function shrink(f,max){return new Promise((ok,ko)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(new Error('Image illisible')),'image/jpeg',.82)};im.onerror=()=>ko(new Error('Image illisible'));im.src=u})}
 async function upload(f,max){const b=await shrink(f,max),p=`${U.id}/${Date.now()}.jpg`;const{error}=await sb.storage.from('photos').upload(p,b,{contentType:'image/jpeg'});if(error)throw error;return sb.storage.from('photos').getPublicUrl(p).data.publicUrl}
+async function uploadVideo(f){if(!f.type.startsWith('video/'))throw new Error('Choisis un fichier vidéo.');if(f.size>50*1024*1024)throw new Error('La vidéo dépasse la limite de 50 Mo. Choisis une vidéo plus courte.');const ext=(f.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,'');const path=`${U.id}/${Date.now()}.${ext}`;const{error}=await sb.storage.from('videos').upload(path,f,{contentType:f.type,upsert:false});if(error)throw error;return sb.storage.from('videos').getPublicUrl(path).data.publicUrl}
 function rmImg(p){const k=p&&p.image_url&&p.image_url.split('/photos/')[1];if(k)sb.storage.from('photos').remove([k])}
 async function setAvatar(f){if(!f)return;try{const u=await upload(f,400);await run(sb.from('profiles').update({avatar_url:u}).eq('id',U.id))}catch(e){alert(e.message)}}
 async function run(q){const{error}=await q;if(error)alert(error.message);await load()}
@@ -293,7 +295,7 @@ ${mode==='up'?'<input id="nm" placeholder="Ton nom" maxlength="30" autocomplete=
 function post(p){
  const l=lks.filter(x=>x.post_id===p.id),mine=l.some(x=>x.user_id===U.id),c=cms.filter(x=>x.post_id===p.id);
  return `<article class="card" data-id="${p.id}"><div class="row">${av(p.user_id)}<div><b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b><div class="meta">${ago(p.created_at)}</div></div>${p.user_id===U.id||isAdmin()?'<button class="del" data-a="del" aria-label="Supprimer la publication">×</button>':'<button class="del" data-a="rp" aria-label="Signaler la publication">🚩</button>'}</div>
- ${p.content?`<p>${esc(p.content)}</p>`:''}${p.image_url?`<img class="pic" src="${esc(p.image_url)}" alt="Photo de la publication" loading="lazy">`:''}<div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
+ ${p.content?`<p>${esc(p.content)}</p>`:''}${p.image_url?`<img class="pic" src="${esc(p.image_url)}" alt="Photo de la publication" loading="lazy">`:''}${p.video_url?`<video class="pic" src="${esc(p.video_url)}" controls playsinline preload="metadata" style="max-height:520px;background:#000">Ton navigateur ne peut pas lire cette vidéo.</video>`:''}<div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
  <div class="bar"><button class="act ${mine?'on':''}" data-a="like">${mine?'👍 Aimé':'👍 J’aime'}</button></div>
  ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id||isAdmin()?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:`<button class="del" data-a="rc" data-c="${x.id}" aria-label="Signaler le commentaire">🚩</button>`}</div></div>`).join('')}
  <div class="cin"><input id="c${p.id}" placeholder="Écrire un commentaire…" maxlength="1000"><button class="btn" data-a="cm">Envoyer</button></div></article>`}
@@ -303,10 +305,28 @@ function statusZone(){
  const members=[...new Set(statuses.map(x=>x.user_id))].filter(id=>id!==U.id);
  return `<section class="card" style="padding:12px 10px 4px"><div class="row" style="padding:0 4px 9px"><b>Les instants</b><span class="meta" style="margin-left:auto">24 heures</span></div><div class="status-strip"><button class="story add" id="status-add"><span class="story-ring">＋</span><span class="story-name">Mon statut</span></button>${mine?`<button class="story" data-status="${mine.id}"><span class="story-ring">${av(U.id)}</span><span class="story-name">Mon statut</span></button>`:''}${members.map(id=>{const st=statuses.find(x=>x.user_id===id);return `<button class="story" data-status="${st.id}"><span class="story-ring">${av(id)}</span><span class="story-name">${esc(nm(id))}</span></button>`}).join('')||'<span class="meta" style="align-self:center">Les nouveaux statuts apparaîtront ici.</span>'}</div></section>${showStatusForm()}`;
 }
-function showStatusForm(){return showStatus?`<div class="card"><b>Partager un instant</b><textarea id="status-text" rows="2" maxlength="500" placeholder="Que veux-tu partager ?" style="width:100%;margin:9px 0"></textarea><div class="end" style="gap:8px;align-items:center"><label class="lk" for="status-img">📷 Photo</label><input type="file" id="status-img" accept="image/*" hidden><button class="lk" id="status-cancel">Annuler</button><button class="btn" id="status-publish">Partager</button></div></div>`:''}
+function showStatusForm(){return showStatus?`<div class="card"><b>Partager un instant</b><textarea id="status-text" rows="2" maxlength="500" placeholder="Que veux-tu partager ?" style="width:100%;margin:9px 0"></textarea><div class="end" style="gap:8px;align-items:center;flex-wrap:wrap"><label class="lk" for="status-img">📷 Photo</label><input type="file" id="status-img" accept="image/*" hidden><label class="lk" for="status-video">🎬 Vidéo</label><input type="file" id="status-video" accept="video/*" hidden><button class="lk" id="status-cancel">Annuler</button><button class="btn" id="status-publish">Partager</button></div><p class="meta">Les instants expirent après 24 h. Les contenus signalés peuvent être examinés par la modération.</p></div>`:''}
+function closeStory(){clearInterval(storyTimer);storyTimer=null;const v=document.querySelector('.status-view video');if(v)v.pause();document.querySelector('.status-view')?.remove()}
+function openStory(){
+ closeStory();const st=storyGroup[storyIndex];if(!st)return;
+ const group=storyGroup,idx=storyIndex,views=storyViews.filter(x=>String(x.status_id)===String(st.id)).length;
+ const reacted=storyReactions.some(x=>String(x.status_id)===String(st.id)&&x.user_id===U.id);
+ const ov=document.createElement('div');ov.className='status-view';ov.innerHTML=`<div class="story-progress">${group.map((x,i)=>`<i><b style="width:${i<idx?'100%':'0%'}"></b></i>`).join('')}</div><div class="story-head">${av(st.user_id)}<div><b>${esc(nm(st.user_id))}</b><div class="meta">${ago(st.created_at)}</div></div><button class="story-close" id="story-close" aria-label="Fermer">×</button></div><div class="story-stage">${st.image_url?`<img src="${esc(st.image_url)}" alt="Story de ${esc(nm(st.user_id))}">`:''}${st.video_url?`<video src="${esc(st.video_url)}" controls autoplay playsinline></video>`:''}${st.content?`<div class="story-text">${esc(st.content)}</div>`:''}<button class="story-nav prev" id="story-prev" aria-label="Story précédente"></button><button class="story-nav next" id="story-next" aria-label="Story suivante"></button></div><div class="story-actions"><span class="meta">👁 ${views+(st.user_id===U.id?0:1)} vues</span><span class="spacer"></span>${st.user_id===U.id||isAdmin()?`<button id="story-delete">Supprimer</button>`:`<button id="story-react">${reacted?'💜 Aimé':'♡ Réagir'}</button><button id="story-report">🚩 Signaler</button>`}</div>`;
+ document.body.appendChild(ov);
+ const bar=ov.querySelectorAll('.story-progress i b')[idx];let progress=0;const duration=st.video_url?15000:6000;
+ const tick=()=>{progress=Math.min(100,progress+100/(duration/100));bar.style.width=progress+'%';if(progress>=100)nextStory(1)};
+ storyTimer=setInterval(tick,100);
+ const vid=ov.querySelector('video');if(vid){vid.onended=()=>nextStory(1);vid.onplay=()=>{clearInterval(storyTimer);storyTimer=null};vid.onpause=()=>{if(!storyTimer)storyTimer=setInterval(tick,100)}}
+ ov.querySelector('#story-close').onclick=closeStory;ov.querySelector('#story-prev').onclick=()=>nextStory(-1);ov.querySelector('#story-next').onclick=()=>nextStory(1);
+ const del=ov.querySelector('#story-delete');if(del)del.onclick=async()=>{if(confirm('Supprimer cet instant ?')){const{error}=await sb.from('statuses').delete().eq('id',st.id);closeStory();if(error)alert(error.message);await load()}};
+ const react=ov.querySelector('#story-react');if(react)react.onclick=async()=>{const existing=storyReactions.find(x=>String(x.status_id)===String(st.id)&&x.user_id===U.id);const q=existing?sb.from('story_reactions').delete().eq('id',existing.id):sb.from('story_reactions').insert({status_id:st.id});const{error}=await q;if(error)alert('Réaction indisponible : '+error.message);else await load();closeStory();openStory()};
+ const report=ov.querySelector('#story-report');if(report)report.onclick=async()=>{const reason=prompt('Pourquoi signaler cette story ? (contenu inapproprié, violence, harcèlement, autre)');if(reason===null)return;const{error}=await sb.from('reports').insert({status_id:st.id,reason:reason.trim()});alert(error?'Signalement impossible : '+error.message:'Signalement envoyé aux modérateurs.');if(!error)closeStory()};
+ if(st.user_id!==U.id&&!storyViews.some(x=>String(x.status_id)===String(st.id)&&x.user_id===U.id)){sb.from('story_views').insert({status_id:st.id}).then(({error})=>{if(error)console.warn('Story view:',error.message)})}
+}
+function nextStory(dir){const n=storyIndex+dir;if(n<0){storyIndex=0;openStory();return}if(n>=storyGroup.length){closeStory();return}storyIndex=n;openStory()}
 function feed(by){
  const L=posts.filter(p=>!by||p.user_id===by);
- return (by?'':(statusZone()+`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end" style="gap:8px;align-items:center"><label class="lk" for="pimg">📷 Photo</label><input type="file" id="pimg" accept="image/*" hidden>${pend?`<span class="meta">${esc(pend.name.slice(0,18))} <button class="del" id="pclr" aria-label="Retirer la photo">×</button></span>`:''}<button class="btn" id="pub">Publier</button></div></div>`))
+ return (by?'':(statusZone()+`<div class="card"><div class="row top">${av(U.id)}<textarea id="np" rows="2" maxlength="2000" placeholder="Quoi de neuf ?"></textarea></div><div class="end" style="gap:8px;align-items:center;flex-wrap:wrap"><label class="lk" for="pimg">📷 Photo</label><input type="file" id="pimg" accept="image/*" hidden><label class="lk" for="pvid">🎬 Vidéo</label><input type="file" id="pvid" accept="video/mp4,video/webm,video/quicktime,video/*" hidden>${pend?`<span class="meta">📷 ${esc(pend.name.slice(0,18))} <button class="del" id="pclr" aria-label="Retirer la photo">×</button></span>`:''}${vpend?`<span class="meta">🎬 ${esc(vpend.name.slice(0,18))} <button class="del" id="pvclr" aria-label="Retirer la vidéo">×</button></span>`:''}<button class="btn" id="pub">Publier</button></div></div>`))
  +(L.map(post).join('')||'<div class="empty">Aucune publication pour l’instant. Écris la première !</div>')}
 
 function chat(){
@@ -404,12 +424,12 @@ function sync(){
 }
 function mod(){
  const L=reps.map(r=>{
-  const k=r.post_id?'post':r.event_id?'event':r.item_id?'item':'comment',i=r.post_id||r.event_id||r.item_id||r.comment_id,c=k==='post'?posts.find(x=>x.id===i):k==='event'?evs.find(x=>x.id===i):k==='item'?items.find(x=>x.id===i):cms.find(x=>x.id===i);
-  return `<div class="card"><div class="meta">${{post:'Publication',event:'Événement',item:'Objet perdu/trouvé',comment:'Commentaire'}[k]} · signalé par ${esc(nm(r.reporter_id))} · ${ago(r.created_at)}</div>
-  <p><b>${c?esc(nm(c.user_id)):'?'}</b> : ${c?esc(k==='event'||k==='item'?c.title+' — '+c.place:c.content):'Contenu introuvable'}</p>${c&&c.image_url?`<img class="pic" src="${esc(c.image_url)}" alt="">`:''}
+  const k=r.post_id?'post':r.event_id?'event':r.item_id?'item':r.status_id?'status':'comment',i=r.post_id||r.event_id||r.item_id||r.status_id||r.comment_id,c=k==='post'?posts.find(x=>x.id===i):k==='event'?evs.find(x=>x.id===i):k==='item'?items.find(x=>x.id===i):k==='status'?statuses.find(x=>x.id===i):cms.find(x=>x.id===i);
+  return `<div class="card"><div class="meta">${{post:'Publication / vidéo',event:'Événement',item:'Objet perdu/trouvé',status:'Story / instant',comment:'Commentaire'}[k]} · signalé par ${esc(nm(r.reporter_id))} · ${ago(r.created_at)}</div>
+  <p><b>${c?esc(nm(c.user_id)):'?'}</b> : ${c?esc(k==='event'||k==='item'?c.title+' — '+c.place:c.content):'Contenu introuvable'}</p>${c&&c.image_url?`<img class="pic" src="${esc(c.image_url)}" alt="">`:''}${c&&c.video_url?`<video class="pic" src="${esc(c.video_url)}" controls playsinline></video>`:''}
   ${r.reason?`<div class="meta">Motif : ${esc(r.reason)}</div>`:''}
   <div class="end" style="gap:8px"><button class="lk" data-a="rig" data-r="${r.id}">Ignorer</button><button class="btn" data-a="mdel" data-t="${k}" data-i="${i}">Supprimer</button></div></div>`}).join('');
- return `<h3 style="margin:4px 0 12px">Signalements (${reps.length})</h3>`+(L||'<div class="empty">Aucun signalement. Tout est calme 🎉</div>')
+ return `<h3 style="margin:4px 0 12px">Centre de modération</h3><div class="mod-summary"><div class="mod-stat"><b>${reps.length}</b><span class="meta">Signalements</span></div><div class="mod-stat"><b>${posts.length+statuses.length}</b><span class="meta">Posts & instants</span></div><div class="mod-stat"><b>${reps.filter(r=>Date.now()-new Date(r.created_at)<864e5).length}</b><span class="meta">Dernières 24 h</span></div></div><p class="meta">Les signalements sont conservés même lorsque tu es déconnecté. Les contenus signalés apparaissent ici à ta prochaine connexion.</p>`+(L||'<div class="empty">Aucun signalement. Tout est calme 🎉</div>')
 }
 function draw(){
  const A=$('#app');
@@ -487,8 +507,8 @@ document.addEventListener('click',async e=>{
  else if(c('#head-notif')){tab='nt';nseen=seenN();render()}
  else if(c('#status-add')){showStatus=!showStatus;render()}
  else if(c('#status-cancel')){showStatus=false;statusPend=null;render()}
- else if(c('#status-publish')){const content=($('#status-text').value||'').trim(),f=$('#status-img').files[0];if(!content&&!f){alert('Ajoute un texte ou une photo.');return}const b=c('#status-publish');b.disabled=true;b.textContent='Envoi…';try{const image_url=f?await upload(f,1080):null;const{error}=await sb.from('statuses').insert({content,image_url});if(error)throw error;showStatus=false;await load()}catch(e){alert('Impossible de publier le statut. Vérifie la configuration de la table statuses dans Supabase. '+e.message);render()}}
- else if(c('[data-status]')){const st=statuses.find(x=>x.id===c('[data-status]').dataset.status);if(st){const ov=document.createElement('div');ov.className='status-view';ov.innerHTML=`<button id="close-status">×</button><div class="meta" style="color:#ddd;margin-bottom:16px">${esc(nm(st.user_id))} · ${ago(st.created_at)}</div>${st.image_url?`<img src="${esc(st.image_url)}" alt="Statut">`:''}<p>${esc(st.content||'')}</p>`;document.body.appendChild(ov);ov.querySelector('#close-status').onclick=()=>ov.remove()}}
+ else if(c('#status-publish')){const content=($('#status-text').value||'').trim(),f=$('#status-img').files[0],vf=$('#status-video').files[0];if(!content&&!f&&!vf){alert('Ajoute un texte, une photo ou une vidéo.');return}if(f&&vf){alert('Choisis une photo ou une vidéo pour cet instant.');return}const b=c('#status-publish');b.disabled=true;b.textContent='Envoi…';try{const image_url=f?await upload(f,1080):null,video_url=vf?await uploadVideo(vf):null;const{error}=await sb.from('statuses').insert({content,image_url,video_url});if(error)throw error;showStatus=false;await load()}catch(e){alert('Impossible de publier le statut. Vérifie la configuration Supabase. '+e.message);render()}}
+ else if(c('[data-status]')){const st=statuses.find(x=>String(x.id)===String(c('[data-status]').dataset.status));if(st){storyGroup=statuses.filter(x=>x.user_id===st.user_id);storyIndex=storyGroup.findIndex(x=>String(x.id)===String(st.id));openStory()}}
  else if(c('#t-ev')){tab='ev';render()}
  else if(c('#t-feed')){tab='feed';render()}
  else if(c('#t-search')){tab='search';qv='';render()}
@@ -520,8 +540,9 @@ document.addEventListener('click',async e=>{
  else if(c('#t-pf')){tab='pf';pv=null;edit=false;followView=null;render()}
  else if(c('#out'))logout();
  else if(c('#pclr')){pend=null;render()}
- else if(c('#pub')){const v=($('#np').value||'').trim();if(!v&&!pend)return;const b=c('#pub');b.disabled=true;b.textContent='Envoi…';
-  try{const u=pend?await upload(pend,1080):null;pend=null;$('#np').value='';await run(sb.from('posts').insert({content:v,image_url:u}))}catch(er){alert(er.message);render()}}
+ else if(c('#pvclr')){vpend=null;render()}
+ else if(c('#pub')){const v=($('#np').value||'').trim();if(!v&&!pend&&!vpend)return;if(pend&&vpend){alert('Choisis une photo ou une vidéo, pas les deux à la fois.');return}const b=c('#pub');b.disabled=true;b.textContent='Envoi…';
+  try{const u=pend?await upload(pend,1080):null;const vu=vpend?await uploadVideo(vpend):null;pend=null;vpend=null;$('#np').value='';await run(sb.from('posts').insert({content:v,image_url:u,video_url:vu}))}catch(er){alert('Publication impossible : '+er.message);render()}}
  else if(c('#bk')){peer=null;render()}
  else if(c('#snd'))send();
  else if(c('[data-follow]')){
@@ -546,7 +567,7 @@ document.addEventListener('click',async e=>{
    const r=prompt('Pourquoi signales-tu ce contenu ? (facultatif)');if(r===null)return;
    const row=t.dataset.a==='rp'?{post_id:id,reason:r.trim()}:{comment_id:+t.dataset.c,reason:r.trim()};
    const{error}=await sb.from('reports').insert(row);alert(error?error.message:'Merci, ton signalement a été envoyé aux modérateurs.')}
-  else if(t.dataset.a==='mdel'){if(confirm('Supprimer ce contenu ?')){if(t.dataset.t==='post')rmImg(posts.find(x=>x.id===+t.dataset.i));if(t.dataset.t==='event')rmImg(evs.find(x=>x.id===+t.dataset.i));if(t.dataset.t==='item')rmImg(items.find(x=>x.id===+t.dataset.i));run(sb.from({post:'posts',event:'events',item:'lost_items',comment:'comments'}[t.dataset.t]).delete().eq('id',+t.dataset.i))}}
+  else if(t.dataset.a==='mdel'){if(confirm('Supprimer ce contenu ?')){if(t.dataset.t==='post')rmImg(posts.find(x=>x.id===+t.dataset.i));if(t.dataset.t==='event')rmImg(evs.find(x=>x.id===+t.dataset.i));if(t.dataset.t==='item')rmImg(items.find(x=>x.id===+t.dataset.i));run(sb.from({post:'posts',event:'events',item:'lost_items',comment:'comments',status:'statuses'}[t.dataset.t]).delete().eq('id',+t.dataset.i))}}
   else if(t.dataset.a==='rig')run(sb.from('reports').delete().eq('id',+t.dataset.r));
   else if(t.dataset.a==='k0'||t.dataset.a==='k1'){lk=t.dataset.a==='k0'?'lost':'found';render()}
   else if(t.dataset.a==='ires')run(sb.from('lost_items').update({resolved:true}).eq('id',id));
@@ -559,13 +580,15 @@ document.addEventListener('click',async e=>{
  }
 });
 document.addEventListener('change',e=>{
- if(e.target.id==='pimg'){pend=e.target.files[0]||null;render()}
+ if(e.target.id==='pimg'){pend=e.target.files[0]||null;if(pend)vpend=null;render()}
+ else if(e.target.id==='pvid'){vpend=e.target.files[0]||null;if(vpend)pend=null;render()}
  else if(e.target.id==='limg'){lpend=e.target.files[0]||null;render()}
  else if(e.target.id==='eimg'){epend=e.target.files[0]||null;render()}
  else if(e.target.id==='avin')setAvatar(e.target.files[0]);
 });
 document.addEventListener('input',e=>{const m={et:'t',ep:'p',edt:'d',eds:'s'};if(m[e.target.id])fd[m[e.target.id]]=e.target.value;const m2={lt:'t',lp:'p',ls:'s'};if(m2[e.target.id])lfd[m2[e.target.id]]=e.target.value;const m3={anm:'n',aem:'e',apw:'p'};if(m3[e.target.id])ad[m3[e.target.id]]=e.target.value;if(e.target.id==='q'){qv=e.target.value;render()}});
 document.addEventListener('keydown',e=>{
+ if(document.querySelector('.status-view')){if(e.key==='Escape'){closeStory();return}if(e.key==='ArrowRight'){nextStory(1);return}if(e.key==='ArrowLeft'){nextStory(-1);return}}
  if(e.key!=='Enter'||e.shiftKey)return;const t=e.target;
  if(t.id==='mi'){e.preventDefault();send()}
  else if(t.closest&&t.closest('.cin')){e.preventDefault();addComment(t.closest('article'))}
