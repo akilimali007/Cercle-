@@ -62,6 +62,11 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 .av{position:relative;overflow:hidden}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pic{display:block;width:100%;height:auto;max-height:520px;object-fit:cover;border-radius:8px;margin-top:8px}
+.bd{position:absolute;top:0;right:-2px;background:#e0245e;color:#fff;border-radius:9px;font:700 11px/16px system-ui;min-width:16px;padding:0 4px;text-align:center;font-style:normal}
+.bd[hidden]{display:none}
+nav button{position:relative}
+.nt{display:flex;gap:10px;align-items:center;padding:10px;border-radius:8px;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+.nt:hover{background:var(--hv)}.nt.new{background:color-mix(in srgb,var(--ac) 14%,transparent)}.nt .meta{display:block}
 .cr{text-align:center;color:var(--mu);font-size:13px;padding:4px 12px 24px}
 @media (max-width:640px){
  nav button{padding:8px 7px;font-size:14px}
@@ -71,16 +76,17 @@ article p{margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
 </head>
 <body>
 <header><div class="logo">Cercle</div>
-<nav id="nav" hidden><button id="t-feed">Publications</button><button id="t-msg">Messages</button><button id="t-md" hidden aria-label="Modération">🛡️</button><button id="t-pf" aria-label="Mon profil">👤</button></nav></header>
+<nav id="nav" hidden><button id="t-feed">Accueil</button><button id="t-msg">Messages<i class="bd" id="bm" hidden></i></button><button id="t-nt" aria-label="Notifications">🔔<i class="bd" id="bd" hidden></i></button><button id="t-md" hidden aria-label="Modération">🛡️</button><button id="t-pf" aria-label="Mon profil">👤</button></nav></header>
 <main id="app"></main>
 <footer class="cr">Créé par Akilimali Dunia Christ-vie</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script>
 const sb=supabase.createClient('https://mrhhgsupvhxzgeqhhubo.supabase.co','sb_publishable_WmB3qmndLi8VIPgOn_Iaww_htNqQif4');
-let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T,pend=null;
+let U=null,P={},posts=[],cms=[],lks=[],msgs=[],reps=[],tab='feed',peer=null,pv=null,edit=false,mode='in',qv='',started=null,T,pend=null,nseen=0;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isAdmin=()=>!!(U&&P[U.id]&&P[U.id].is_admin);
+const seenN=()=>+new Date((P[U.id]||{}).notif_seen_at||0);
 const nm=id=>(P[id]&&P[id].name)||'Étudiant';
 const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55% 42%)`;
 const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${P[id]&&P[id].avatar_url?`<img src="${esc(P[id].avatar_url)}" alt="">`:esc(nm(id)[0]||'?').toUpperCase()}</span>`;
@@ -143,6 +149,23 @@ function prof(){
  ${edit&&mine?`<div class="card"><input id="en" maxlength="30" value="${esc(nm(id))}" aria-label="Nom"><textarea id="eb" rows="3" maxlength="160" aria-label="Bio" style="width:100%;display:block;border-radius:10px">${esc(p.bio||'')}</textarea><div class="end" style="gap:8px;align-items:center"><label class="lk" for="avin">📷 Changer la photo</label><input type="file" id="avin" accept="image/*" hidden><button class="btn" id="es">Enregistrer</button></div></div>`:''}
  ${mine?'<div class="end" style="margin:0 0 12px"><button class="lk" id="out">Se déconnecter</button></div>':''}${feed(id)}`}
 
+function notifs(){
+ const mine=new Set(posts.filter(p=>p.user_id===U.id).map(p=>p.id)),L=[];
+ lks.forEach(l=>{if(mine.has(l.post_id)&&l.user_id!==U.id)L.push({by:l.user_id,t:l.created_at,txt:'a aimé ta publication.'})});
+ cms.forEach(c=>{if(mine.has(c.post_id)&&c.user_id!==U.id)L.push({by:c.user_id,t:c.created_at,txt:'a commenté : '+c.content.slice(0,60)})});
+ return L.sort((a,b)=>new Date(b.t)-new Date(a.t)).slice(0,50);
+}
+function ntv(){
+ const L=notifs().map(n=>`<button class="nt ${+new Date(n.t)>nseen?'new':''}" data-go="1">${av(n.by)}<span><b>${esc(nm(n.by))}</b> ${esc(n.txt)}<span class="meta">${ago(n.t)}</span></span></button>`).join('');
+ return `<div class="card" style="padding:6px">${L||'<div class="empty">Aucune notification pour l’instant.</div>'}</div>`
+}
+function sync(){
+ if(!U||!P[U.id])return;
+ if(tab==='nt'){const N=notifs();if(N.length){const t=+new Date(N[0].t);if(t>seenN()){const iso=new Date(t).toISOString();P[U.id].notif_seen_at=iso;sb.from('profiles').update({notif_seen_at:iso}).eq('id',U.id).then(()=>{})}}}
+ if(tab==='msg'&&peer&&msgs.some(m=>m.sender_id===peer&&m.receiver_id===U.id&&!m.read_at)){
+  const iso=new Date().toISOString();msgs.forEach(m=>{if(m.sender_id===peer&&m.receiver_id===U.id&&!m.read_at)m.read_at=iso});
+  sb.from('messages').update({read_at:iso}).eq('sender_id',peer).eq('receiver_id',U.id).is('read_at',null).then(()=>{})}
+}
 function mod(){
  const L=reps.map(r=>{
   const k=r.post_id?'post':'comment',i=r.post_id||r.comment_id,c=r.post_id?posts.find(x=>x.id===i):cms.find(x=>x.id===i);
@@ -157,13 +180,16 @@ function draw(){
  if(!U){$('#nav').hidden=true;A.innerHTML=authView();return}
  $('#nav').hidden=false;
  $('#t-md').hidden=!isAdmin();
- for(const k of['feed','msg','md','pf'])$('#t-'+k).className=tab===k?'on':'';
- A.innerHTML=tab==='feed'?feed():tab==='msg'?chat():tab==='md'&&isAdmin()?mod():prof();
+ for(const k of['feed','msg','nt','md','pf'])$('#t-'+k).className=tab===k?'on':'';
+ A.innerHTML=tab==='feed'?feed():tab==='msg'?chat():tab==='nt'?ntv():tab==='md'&&isAdmin()?mod():prof();
+ const un=notifs().filter(n=>+new Date(n.t)>seenN()).length,um=msgs.filter(m=>m.receiver_id===U.id&&!m.read_at).length;
+ $('#bd').textContent=un;$('#bd').hidden=!un||tab==='nt';$('#bm').textContent=um;$('#bm').hidden=!um;
+ document.title=(un+um?`(${un+um}) `:'')+'Cercle';
  const m=$('#ms');if(m)m.scrollTop=m.scrollHeight;
 }
 function render(){
  const a=document.activeElement,id=a&&a.id,v=a&&a.value;
- draw();
+ draw();sync();
  if(id&&v&&a.type!=='file'){const n=document.getElementById(id);if(n){n.value=v;n.focus()}}
 }
 
@@ -194,6 +220,7 @@ document.addEventListener('click',async e=>{
  }
  else if(c('#t-feed')){tab='feed';render()}
  else if(c('#t-msg')){tab='msg';render()}
+ else if(c('#t-nt')){tab='nt';nseen=seenN();render()}
  else if(c('#t-md')){tab='md';render()}
  else if(c('#t-pf')){tab='pf';pv=null;edit=false;render()}
  else if(c('#out'))sb.auth.signOut();
@@ -205,6 +232,7 @@ document.addEventListener('click',async e=>{
  else if(c('#ed')){edit=true;render()}
  else if(c('#es')){const n=$('#en').value.trim()||'Étudiant';edit=false;run(sb.from('profiles').update({name:n,bio:$('#eb').value.trim()}).eq('id',U.id))}
  else if(c('[data-p]')){pv=c('[data-p]').dataset.p;tab='pf';edit=false;render();scrollTo(0,0)}
+ else if(c('[data-go]')){tab='feed';render();scrollTo(0,0)}
  else if(c('[data-m]')){peer=c('[data-m]').dataset.m;tab='msg';render();const i=$('#mi');if(i)i.focus()}
  else if(t.dataset.a){
   const art=c('article'),id=art&&+art.dataset.id;
