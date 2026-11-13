@@ -149,13 +149,37 @@ body.noscroll{overflow:hidden}body.noscroll .cr{display:none}
 .sheetbg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:78dvh;overflow:auto;background:var(--card);color:var(--tx);border-radius:18px 18px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto}
 .cmlist{margin:8px 0}
+#ldr,#neterr{position:fixed;inset:0;z-index:60;background:var(--bg);color:var(--ac);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px}
+#ldr[hidden],#neterr[hidden],#netbar[hidden]{display:none}
+#ldr svg,#neterr svg{width:150px;height:68px;overflow:visible}
+svg.rings circle{fill:none;stroke:currentColor;stroke-width:9}
+.spin{animation:spinr 1.2s linear infinite}
+@keyframes spinr{to{transform:rotate(360deg)}}
+.lost .d1{animation:dr1 1.6s ease-in-out infinite}.lost .d2{animation:dr2 1.6s ease-in-out infinite}.lost .d3{animation:dr3 1.6s ease-in-out infinite}
+@keyframes dr1{50%{transform:translate(0,-22px)}}@keyframes dr2{50%{transform:translate(-22px,12px)}}@keyframes dr3{50%{transform:translate(22px,12px)}}
+#neterr h3{margin:6px 0 0;color:var(--tx)}#neterr p{color:var(--mu);margin:0;max-width:280px}
+#ldr p{color:var(--mu);margin:0}
+#netbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 72px);z-index:40;background:#d93025;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;display:flex;gap:8px;align-items:center;white-space:nowrap}
+#netbar::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+#ptr{position:fixed;left:50%;top:0;z-index:6;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:var(--card);color:var(--ac);display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.3);opacity:0;pointer-events:none;transform:translateY(-60px)}
+#ptr svg{width:30px;height:auto;overflow:visible}#ptr circle{stroke-width:14!important}#ptr:not(.spinning) circle{animation:none!important}
+svg.bounce circle{transform-box:fill-box;transform-origin:center bottom;animation:bnc .9s ease-in-out infinite}
+svg.bounce circle:nth-child(2){animation-delay:.15s}svg.bounce circle:nth-child(3){animation-delay:.3s}
+@keyframes bnc{0%,100%{transform:translateY(0) scale(1.1,.86)}50%{transform:translateY(-34px) scale(1,1)}}
+#neterr svg{color:#e0643a}#neterr svg circle{animation-duration:1.5s}
+@media (prefers-reduced-motion:reduce){.spin,svg.bounce circle{animation:none!important}}
 </style>
 </head>
 <body>
 <div id="splash" aria-hidden="true"><svg viewBox="0 0 200 200"><circle class="r r1" pathLength="1" cx="100" cy="78.5" r="36"/><circle class="r r2" pathLength="1" cx="81.4" cy="110.7" r="36"/><circle class="r r3" pathLength="1" cx="118.6" cy="110.7" r="36"/><circle class="dot" cx="100" cy="100" r="6.6"/></svg><div class="sn">Cercle</div></div>
 <script>setTimeout(function(){var s=document.getElementById('splash');if(s){s.classList.add('out');setTimeout(function(){s.remove()},600)}},2900)</script>
-<header><div class="logo">Cercle</div><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative">♧<i class="bd" id="bd" hidden></i></button></header>
+<header><div class="logo">Cercle</div><button id="fs-btn" class="lk" aria-label="Plein écran" style="font-size:20px">⤢</button><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative">♧<i class="bd" id="bd" hidden></i></button></header>
 <main id="app"></main>
+<div id="ldr" hidden><svg class="rings bounce" viewBox="0 0 200 90"><circle cx="40" cy="62" r="22"/><circle cx="100" cy="62" r="22"/><circle cx="160" cy="62" r="22"/></svg><p>Chargement…</p></div>
+<div id="neterr" hidden><svg class="rings bounce" viewBox="0 0 200 90"><circle cx="40" cy="62" r="22"/><circle cx="100" cy="62" r="22"/><circle cx="160" cy="62" r="22"/></svg><h3>Connexion perdue</h3><p id="nemsg">Vérifie ta connexion Internet : on réessaie automatiquement.</p><button class="btn" id="nretry">Réessayer</button></div>
+<div id="netbar" hidden>Connexion perdue · nouvelle tentative…</div>
+<div id="ptr" aria-hidden="true"><svg class="rings bounce" viewBox="0 0 200 90"><circle cx="40" cy="62" r="22"/><circle cx="100" cy="62" r="22"/><circle cx="160" cy="62" r="22"/></svg></div>
 <nav id="nav" hidden>
 <button id="t-feed"><span>⌂</span>Accueil</button>
 <button id="t-search"><span>⌕</span>Recherche</button>
@@ -188,8 +212,27 @@ const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55%
 const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${P[id]&&P[id].avatar_url?`<img src="${esc(P[id].avatar_url)}" alt="">`:esc(nm(id)[0]||'?').toUpperCase()}</span>`;
 function ago(t){const m=Math.round((Date.now()-new Date(t))/6e4);if(m<1)return'À l’instant';if(m<60)return`Il y a ${m} min`;const h=Math.round(m/60);return h<24?`Il y a ${h} h`:`Il y a ${Math.round(h/24)} j`}
 
+let loaded=false,ldrT=null,retryT=null,ptrY=null,ptrD=0;
+function showLdr(on){clearTimeout(ldrT);const e=$('#ldr');if(!e)return;if(on)ldrT=setTimeout(()=>{e.hidden=false},350);else e.hidden=true}
+function setNet(ok){
+ clearTimeout(retryT);
+ $('#neterr').hidden=ok||loaded;$('#netbar').hidden=ok||!loaded;
+ if(!ok){showLdr(false);retryT=setTimeout(()=>{if(U)load()},5000)}
+}
+window.addEventListener('offline',()=>{if(U)setNet(false)});
+window.addEventListener('online',()=>{if(U)load()});
+function ptrReset(){const p=$('#ptr');p.style.transition='transform .25s,opacity .25s';p.style.opacity=0;p.style.transform='translateY(-60px)'}
+document.addEventListener('touchstart',e=>{const sc=e.target.closest&&e.target.closest('#reels');ptrY=(sc&&sc.scrollTop<=0)?e.touches[0].clientY:null;ptrD=0},{passive:true});
+document.addEventListener('touchmove',e=>{if(ptrY===null)return;const d=e.touches[0].clientY-ptrY;if(d<=0){ptrD=0;return}
+ ptrD=Math.min(d,140);const p=$('#ptr'),hh=$('header').offsetHeight;p.style.transition='none';p.style.opacity=Math.min(1,ptrD/70);p.style.transform=`translateY(${hh+ptrD*.5-30}px) rotate(${ptrD*3}deg)`},{passive:true});
+document.addEventListener('touchend',async()=>{
+ if(ptrY===null)return;const go=ptrD>85;ptrY=null;const p=$('#ptr');
+ if(!go){ptrReset();return}
+ p.style.transition='transform .2s';p.style.transform=`translateY(${$('header').offsetHeight+16}px)`;p.classList.add('spinning');
+ const t0=Date.now();try{await load()}catch(e){}
+ setTimeout(()=>{p.classList.remove('spinning');ptrReset()},Math.max(0,700-(Date.now()-t0)))});
 async function load(){
- const r=await Promise.all([
+ let r;try{r=await Promise.all([
   sb.from('profiles').select('*'),
   sb.from('posts').select('*').order('created_at',{ascending:false}).limit(60),
   sb.from('comments').select('*').order('created_at'),
@@ -201,10 +244,12 @@ async function load(){
   sb.from('lost_items').select('*').gte('created_at',new Date(Date.now()-5184e6).toISOString()).order('created_at',{ascending:false}),
   sb.from('follows').select('*'),
   sb.from('statuses').select('*').gt('created_at',new Date(Date.now()-864e5).toISOString()).order('created_at',{ascending:false}),
-  sb.from('story_views').select('*'),sb.from('story_reactions').select('*')]);
+  sb.from('story_views').select('*'),sb.from('story_reactions').select('*')]);}catch(e){setNet(false);return}
+ if(r.some(x=>x&&x.error&&(/fetch|network|load failed|timeout/i.test(x.error.message||'')||!navigator.onLine))){setNet(false);return}
  P={};(r[0].data||[]).forEach(p=>P[p.id]=p);
  {const a=accts();if(U&&a[U.id]&&P[U.id]){a[U.id].name=P[U.id].name;setAccts(a)}}
  posts=r[1].data||[];cms=r[2].data||[];lks=r[3].data||[];msgs=r[4].data||[];reps=r[5].data||[];evs=r[6].data||[];rsv=r[7].data||[];items=r[8].data||[];follows=r[9].data||[];statuses=r[10].data||[];storyViews=r[11].data||[];storyReactions=r[12].data||[];
+ loaded=true;setNet(true);showLdr(false);
  render();
 }
 function shrink(f,max){return new Promise((ok,ko)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(new Error('Image illisible')),'image/jpeg',.82)};im.onerror=()=>ko(new Error('Image illisible'));im.src=u})}
@@ -529,7 +574,7 @@ function mod(){
 }
 function draw(){
  const A=$('#app');
- if(!U){$('#nav').hidden=true;A.classList.remove('reelmode');document.body.classList.remove('noscroll');A.innerHTML=authView();return}
+ if(!U){showLdr(false);$('#neterr').hidden=true;$('#netbar').hidden=true;$('#nav').hidden=true;A.classList.remove('reelmode');document.body.classList.remove('noscroll');A.innerHTML=authView();return}
  $('#nav').hidden=false;
  $('#t-md').hidden=!isAdmin();
  for(const k of['ev','feed','search','msg','md','pf'])$('#t-'+k).className=tab===k?'on':'';
@@ -550,6 +595,7 @@ function render(){
 
 async function start(){
  if(started===U.id)return;started=U.id;
+ loaded=false;showLdr(true);
  await load();
  const m=U.user_metadata&&U.user_metadata.name;
  if(m&&P[U.id]&&P[U.id].name===(U.email||'').split('@')[0]){await sb.from('profiles').update({name:m}).eq('id',U.id);P[U.id].name=m;render()}
@@ -603,6 +649,8 @@ document.addEventListener('click',async e=>{
    addAcc=false;ad={n:'',e:'',p:''};
    await sb.auth.setSession({access_token:ss.access_token,refresh_token:ss.refresh_token});
   }catch(x){er.textContent=x.message}}
+ else if(c('#nretry')){load()}
+ else if(c('#fs-btn')){fsToggle()}
  else if(c('#head-notif')){tab='nt';nseen=seenN();render()}
  else if(c('#status-add')){showStatus=!showStatus;render()}
  else if(c('#status-cancel')){showStatus=false;statusPend=null;render()}
@@ -701,6 +749,18 @@ document.addEventListener('keydown',e=>{
  else if(t.id==='apw'){e.preventDefault();$('#agoacc').click()}
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)document.querySelectorAll('#reels video').forEach(v=>v.pause())});
+const fsEl=document.documentElement;
+const fsOK=()=>!!(fsEl.requestFullscreen||fsEl.webkitRequestFullscreen);
+const fsOn=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+function fsIcon(){const b=$('#fs-btn');if(b){b.textContent=fsOn()?'⤡':'⤢';b.setAttribute('aria-label',fsOn()?'Quitter le plein écran':'Plein écran')}}
+function fsToggle(){
+ try{
+  if(fsOn()){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}
+  else{const r=(fsEl.requestFullscreen||fsEl.webkitRequestFullscreen).call(fsEl);if(r&&r.catch)r.catch(()=>{})}
+ }catch(e){}
+}
+if(!fsOK()){const b=$('#fs-btn');if(b)b.hidden=true}
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{fsIcon();setTimeout(sizeReels,150)}));
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
 </body>
