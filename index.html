@@ -169,12 +169,18 @@ svg.bounce circle:nth-child(2){animation-delay:.15s}svg.bounce circle:nth-child(
 @keyframes bnc{0%,100%{transform:translateY(0) scale(1.1,.86)}50%{transform:translateY(-34px) scale(1,1)}}
 #neterr svg{color:#e0643a}#neterr svg circle{animation-duration:1.5s}
 @media (prefers-reduced-motion:reduce){.spin,svg.bounce circle{animation:none!important}}
+.ecoph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--hv);color:var(--mu);min-height:130px;border-radius:8px;text-align:center}
+.reel .ecoph{position:absolute;inset:0;background:#15121f;color:#bbb;border-radius:0}
+.ecoload{background:var(--ac);color:#fff;border:0;border-radius:20px;padding:10px 18px;font-weight:700;cursor:pointer}
+.ecoph small{font-size:11px;opacity:.8}
+#eco-btn.on{background:var(--ac);color:#fff;border-radius:50%;width:34px;height:34px;padding:0}
 </style>
 </head>
 <body>
 <div id="splash" aria-hidden="true"><svg viewBox="0 0 200 200"><circle class="r r1" pathLength="1" cx="100" cy="78.5" r="36"/><circle class="r r2" pathLength="1" cx="81.4" cy="110.7" r="36"/><circle class="r r3" pathLength="1" cx="118.6" cy="110.7" r="36"/><circle class="dot" cx="100" cy="100" r="6.6"/></svg><div class="sn">Cercle</div></div>
-<script>setTimeout(function(){var s=document.getElementById('splash');if(s){s.classList.add('out');setTimeout(function(){s.remove()},600)}},2900)</script>
-<header><div class="logo">Cercle</div><button id="fs-btn" class="lk" aria-label="Plein écran" style="font-size:20px">⤢</button><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative">♧<i class="bd" id="bd" hidden></i></button></header>
+<script>try{if(localStorage.getItem('cercle_eco')==='1'){var s0=document.getElementById('splash');if(s0)s0.remove()}}catch(e){}
+setTimeout(function(){var s=document.getElementById('splash');if(s){s.classList.add('out');setTimeout(function(){s.remove()},600)}},2900)</script>
+<header><div class="logo">Cercle</div><button id="eco-btn" class="lk" aria-label="Mode basique : économie de données" aria-pressed="false" style="font-size:20px">🍃</button><button id="fs-btn" class="lk" aria-label="Plein écran" style="font-size:20px">⤢</button><button id="head-notif" class="lk" aria-label="Notifications" style="font-size:20px;position:relative">♧<i class="bd" id="bd" hidden></i></button></header>
 <main id="app"></main>
 <div id="ldr" hidden><svg class="rings bounce" viewBox="0 0 200 90"><circle cx="40" cy="62" r="22"/><circle cx="100" cy="62" r="22"/><circle cx="160" cy="62" r="22"/></svg><p>Chargement…</p></div>
 <div id="neterr" hidden><svg class="rings bounce" viewBox="0 0 200 90"><circle cx="40" cy="62" r="22"/><circle cx="100" cy="62" r="22"/><circle cx="160" cy="62" r="22"/></svg><h3>Connexion perdue</h3><p id="nemsg">Vérifie ta connexion Internet : on réessaie automatiquement.</p><button class="btn" id="nretry">Réessayer</button></div>
@@ -209,9 +215,24 @@ async function logout(){const a=accts();if(U)delete a[U.id];setAccts(a);await sb
 const seenN=()=>+new Date((P[U.id]||{}).notif_seen_at||0);
 const nm=id=>(P[id]&&P[id].name)||'Étudiant';
 const col=id=>`hsl(${[...String(id)].reduce((a,c)=>a+c.charCodeAt(0),0)%360} 55% 42%)`;
-const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${P[id]&&P[id].avatar_url?`<img src="${esc(P[id].avatar_url)}" alt="">`:esc(nm(id)[0]||'?').toUpperCase()}</span>`;
+const av=(id,c='')=>`<span class="av ${c}" data-p="${id}" style="background:${col(id)}">${P[id]&&P[id].avatar_url&&!eco?`<img src="${esc(P[id].avatar_url)}" alt="">`:esc(nm(id)[0]||'?').toUpperCase()}</span>`;
 function ago(t){const m=Math.round((Date.now()-new Date(t))/6e4);if(m<1)return'À l’instant';if(m<60)return`Il y a ${m} min`;const h=Math.round(m/60);return h<24?`Il y a ${h} h`:`Il y a ${Math.round(h/24)} j`}
 
+let eco=false;
+try{const v=localStorage.getItem('cercle_eco');eco=v===null?!!(navigator.connection&&(navigator.connection.saveData||/(^|-)2g/.test(navigator.connection.effectiveType||''))):v==='1'}catch(e){}
+function ecoPh(kind,url,cls){return `<div class="${cls} ecoph" data-eco="${kind}" data-src="${esc(url)}"><button class="ecoload" data-load="1">${kind==='video'?'▶ Charger la vidéo':'🖼 Charger la photo'}</button><small>Mode basique</small></div>`}
+function ecoApply(){document.body.classList.toggle('eco',eco);const b=$('#eco-btn');if(b){b.classList.toggle('on',eco);b.setAttribute('aria-pressed',eco?'true':'false')}}
+function ecoToggle(){
+ eco=!eco;try{localStorage.setItem('cercle_eco',eco?'1':'0')}catch(e){}
+ ecoApply();const rs=$('#reels');if(rs)rs.remove();
+ toast(eco?'Mode basique activé : photos et vidéos chargées à la demande, moins de données.':'Mode basique désactivé.');
+ if(U)load();else draw()}
+function ecoLoad(ph){
+ const k=ph.dataset.eco,u=ph.dataset.src,cls=ph.className.replace('ecoph','').trim(),rm=cls.includes('rm');let el;
+ if(k==='video'){el=document.createElement('video');el.src=u;el.playsInline=true;el.preload='metadata';el.loop=rm;el.controls=!rm;el.muted=rm?rmuted:false}
+ else{el=document.createElement('img');el.src=u;el.alt='Photo'}
+ el.className=cls;ph.replaceWith(el);
+ if(k==='video')el.play().catch(()=>{})}
 let loaded=false,ldrT=null,retryT=null,ptrY=null,ptrD=0;
 function showLdr(on){clearTimeout(ldrT);const e=$('#ldr');if(!e)return;if(on)ldrT=setTimeout(()=>{e.hidden=false},350);else e.hidden=true}
 function setNet(ok){
@@ -234,7 +255,7 @@ document.addEventListener('touchend',async()=>{
 async function load(){
  let r;try{r=await Promise.all([
   sb.from('profiles').select('*'),
-  sb.from('posts').select('*').order('created_at',{ascending:false}).limit(60),
+  sb.from('posts').select('*').order('created_at',{ascending:false}).limit(eco?25:60),
   sb.from('comments').select('*').order('created_at'),
   sb.from('likes').select('*'),
   sb.from('messages').select('*').order('created_at'),
@@ -372,7 +393,7 @@ ${mode==='up'?'<input id="nm" placeholder="Ton nom" maxlength="30" autocomplete=
 function post(p){
  const l=lks.filter(x=>x.post_id===p.id),mine=l.some(x=>x.user_id===U.id),c=cms.filter(x=>x.post_id===p.id);
  return `<article class="card" data-id="${p.id}"><div class="row">${av(p.user_id)}<div><b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b><div class="meta">${ago(p.created_at)}</div></div>${p.user_id===U.id||isAdmin()?'<button class="del" data-a="del" aria-label="Supprimer la publication">×</button>':'<button class="del" data-a="rp" aria-label="Signaler la publication">🚩</button>'}</div>
- ${p.content?`<p>${esc(p.content)}</p>`:''}${p.image_url?`<img class="pic" src="${esc(p.image_url)}" alt="Photo de la publication" loading="lazy">`:''}${p.video_url?`<video class="pic" src="${esc(p.video_url)}" controls playsinline preload="metadata" style="max-height:520px;background:#000">Ton navigateur ne peut pas lire cette vidéo.</video>`:''}<div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
+ ${p.content?`<p>${esc(p.content)}</p>`:''}${p.image_url?`${eco?ecoPh('img',p.image_url,'pic'):`<img class="pic" src="${esc(p.image_url)}" alt="Photo de la publication" loading="lazy">`}`:''}${p.video_url?`${eco?ecoPh('video',p.video_url,'pic'):`<video class="pic" src="${esc(p.video_url)}" controls playsinline preload="metadata" style="max-height:520px;background:#000">`}Ton navigateur ne peut pas lire cette vidéo.</video>`:''}<div class="meta">${l.length?l.length+' j’aime':''}${l.length&&c.length?' · ':''}${c.length?c.length+' commentaire'+(c.length>1?'s':''):''}</div>
  <div class="bar"><button class="act ${mine?'on':''}" data-a="like">${mine?'👍 Aimé':'👍 J’aime'}</button></div>
  ${c.map(x=>`<div class="cm">${av(x.user_id)}<div class="bub"><b class="lnk" data-p="${x.user_id}">${esc(nm(x.user_id))}</b>${esc(x.content)}${x.user_id===U.id||isAdmin()?`<button class="del" data-a="dc" data-c="${x.id}" aria-label="Supprimer le commentaire">×</button>`:`<button class="del" data-a="rc" data-c="${x.id}" aria-label="Signaler le commentaire">🚩</button>`}</div></div>`).join('')}
  <div class="cin"><input id="c${p.id}" placeholder="Écrire un commentaire…" maxlength="1000"><button class="btn" data-a="cm">Envoyer</button></div></article>`}
@@ -409,8 +430,8 @@ function ovl(p){
  const fol=follows.some(x=>x.follower_id===U.id&&x.following_id===p.user_id),media=p.video_url||p.image_url;
  return `<div class="rauth">${av(p.user_id)}<b class="lnk" data-p="${p.user_id}">${esc(nm(p.user_id))}</b>${p.user_id!==U.id&&!fol?`<button class="rfol" data-follow="${p.user_id}">Suivre</button>`:''}<span class="rtime">${ago(p.created_at)}</span></div>${media&&p.content?`<div class="rcap">${esc(p.content)}</div>`:''}`}
 function reel(p){
- const media=p.video_url?`<video class="rm" src="${esc(p.video_url)}" loop playsinline preload="metadata"${rmuted?' muted':''}></video>`
-  :p.image_url?`<img class="rm" src="${esc(p.image_url)}" alt="Photo de ${esc(nm(p.user_id))}" loading="lazy">`
+ const media=p.video_url?`${eco?ecoPh('video',p.video_url,'rm'):`<video class="rm" src="${esc(p.video_url)}" loop playsinline preload="metadata"${rmuted?' muted':''}></video>`}`
+  :p.image_url?`${eco?ecoPh('img',p.image_url,'rm'):`<img class="rm" src="${esc(p.image_url)}" alt="Photo de ${esc(nm(p.user_id))}" loading="lazy">`}`
   :`<div class="rt" style="background:${GR[p.id%GR.length]}"><p style="font-size:${(p.content||'').length<80?30:(p.content||'').length<160?26:(p.content||'').length<300?22:(p.content||'').length<600?18:15}px">${esc(p.content)}</p></div>`;
  return `<article class="reel" data-id="${p.id}">${media}<div class="rshade"></div><div class="rail">${rail(p)}</div><div class="rovl">${ovl(p)}</div></article>`}
 function textPost(p){
@@ -514,7 +535,7 @@ function lfform(){return `<div class="card"><div class="seg"><button class="chip
  <div class="end" style="gap:8px;align-items:center"><label class="lk" for="limg">📷 Photo</label><input type="file" id="limg" accept="image/*" hidden>${lpend?`<span class="meta">${esc(lpend.name.slice(0,18))} <button class="del" id="lclr" aria-label="Retirer">×</button></span>`:''}<button class="btn" id="lsv">Publier</button></div></div>`}
 function lfc(i){
  const lost=i.kind==='lost',mine=i.user_id===U.id;
- return `<article class="card ev" data-id="${i.id}">${i.image_url?`<img class="pic" src="${esc(i.image_url)}" alt="Photo de l’objet" loading="lazy" style="margin:0 0 8px">`:''}
+ return `<article class="card ev" data-id="${i.id}">${i.image_url?`${eco?ecoPh('img',i.image_url,'pic'):`<img class="pic" src="${esc(i.image_url)}" alt="Photo de l’objet" loading="lazy" style="margin:0 0 8px">`}`:''}
  <div class="row"><span class="chip ${lost?'out':'in'}">${lost?'😢 Perdu':'🙌 Trouvé'}</span><span class="meta">${ago(i.created_at)}</span>${mine||isAdmin()?'<button class="del" data-a="dit" aria-label="Supprimer">×</button>':'<button class="del" data-a="rit" aria-label="Signaler">🚩</button>'}</div>
  <h3>${esc(i.title)}</h3><div class="meta">📍 ${esc(i.place)}</div>
  ${i.description?`<p>${esc(i.description)}</p>`:''}
@@ -533,7 +554,7 @@ function evc(e){
  const d=new Date(e.starts_at),g=rsv.filter(r=>r.event_id===e.id),me=g.some(r=>r.user_id===U.id);
  const when=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
  const who=g.slice(0,3).map(r=>nm(r.user_id).split(' ')[0]).join(', ');
- return `<article class="card ev" data-id="${e.id}">${e.image_url?`<img class="pic" src="${esc(e.image_url)}" alt="Affiche" loading="lazy" style="margin:0 0 8px">`:''}
+ return `<article class="card ev" data-id="${e.id}">${e.image_url?`${eco?ecoPh('img',e.image_url,'pic'):`<img class="pic" src="${esc(e.image_url)}" alt="Affiche" loading="lazy" style="margin:0 0 8px">`}`:''}
  <div class="row"><span class="chip ${e.on_campus?'in':'out'}">${e.on_campus?'🏫 Campus':'🌆 Hors campus'}</span>${e.user_id===U.id||isAdmin()?'<button class="del" data-a="dev" aria-label="Supprimer l’événement">×</button>':'<button class="del" data-a="rev" aria-label="Signaler l’événement">🚩</button>'}</div>
  <h3>${esc(e.title)}</h3><div class="meta">📅 ${esc(when)}</div><div class="meta">📍 ${esc(e.place)}</div>
  ${e.description?`<p>${esc(e.description)}</p>`:''}
@@ -599,7 +620,7 @@ async function start(){
  await load();
  const m=U.user_metadata&&U.user_metadata.name;
  if(m&&P[U.id]&&P[U.id].name===(U.email||'').split('@')[0]){await sb.from('profiles').update({name:m}).eq('id',U.id);P[U.id].name=m;render()}
- sb.channel('live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(T);T=setTimeout(load,300)}).subscribe();
+ sb.channel('live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(T);T=setTimeout(load,eco?10000:300)}).subscribe();
  listenCalls();
 }
 sb.auth.onAuthStateChange((ev,s)=>{
@@ -649,6 +670,8 @@ document.addEventListener('click',async e=>{
    addAcc=false;ad={n:'',e:'',p:''};
    await sb.auth.setSession({access_token:ss.access_token,refresh_token:ss.refresh_token});
   }catch(x){er.textContent=x.message}}
+ else if(c('[data-load]')){const ph=c('.ecoph');if(ph)ecoLoad(ph)}
+ else if(c('#eco-btn')){ecoToggle()}
  else if(c('#nretry')){load()}
  else if(c('#fs-btn')){fsToggle()}
  else if(c('#head-notif')){tab='nt';nseen=seenN();render()}
@@ -759,6 +782,7 @@ function fsToggle(){
   else{const r=(fsEl.requestFullscreen||fsEl.webkitRequestFullscreen).call(fsEl);if(r&&r.catch)r.catch(()=>{})}
  }catch(e){}
 }
+ecoApply();
 if(!fsOK()){const b=$('#fs-btn');if(b)b.hidden=true}
 ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{fsIcon();setTimeout(sizeReels,150)}));
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
